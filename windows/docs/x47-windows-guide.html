@@ -36,17 +36,16 @@
   <div class="wrap">
     <p class="tag">X47 Windows</p>
     <h1>Windows 11 as an X47 privacy twin</h1>
-    <p class="lead">Same circuit wallpaper, less junk, less telemetry, BitLocker with a PIN that does not break Ubuntu.</p>
+    <p class="lead">Same circuit wallpaper, less junk, less telemetry. Disk encryption is advised — BitLocker or VeraCrypt — but the installer does not require it.</p>
 
     <div class="card ok">
       <strong style="color:var(--ink)">Do this once, in Windows, as Administrator</strong>
       <ol>
-        <li>Stay on AC power. Plug in a USB stick.</li>
+        <li>Stay on AC power.</li>
         <li>Right-click <code>C:\X47\Install-X47Windows.bat</code> → <strong>Run as administrator</strong>.</li>
         <li>Type <code>YES</code>.</li>
-        <li>Set a 6+ digit BitLocker PIN when asked. Photograph the 48-digit recovery key.</li>
-        <li>Wait until <code>manage-bde -status C:</code> says 100% and Protection On.</li>
-        <li>Shut down Windows fully. Boot Ubuntu. Import the USB key (below).</li>
+        <li>Pick a look if asked. Encryption is skipped unless you opted in.</li>
+        <li>Shut down Windows fully if you dual-boot (do not hibernate).</li>
       </ol>
     </div>
 
@@ -60,13 +59,13 @@
       <tr><td>Look</td><td>Pick XP, remastered XP, Vista, Windows 10, Windows 11, or X47. Switch later with <code>C:\X47\Apply-X47Theme.bat</code>.</td></tr>
       <tr><td>Security</td><td>Inbound firewall lock, RDP/WinRM/SMBv1/LLMNR off, UAC max, Recall off. Defender and SmartScreen stay on.</td></tr>
       <tr><td>Anonymity</td><td>Block Microsoft accounts, Store/OneDrive/Xbox/telemetry hosts, randomize Wi-Fi MAC, NTP → pool.ntp.org. Standalone: <code>Apply-X47Anonymity.bat</code>.</td></tr>
-      <tr><td>BitLocker</td><td>Full-volume XTS-AES 256 with TPM+PIN. Recovery key goes to USB + <code>C:\X47\BitLocker-Recovery.txt</code>.</td></tr>
+      <tr><td>Encryption</td><td>Not run by default. Optional BitLocker helper, or use VeraCrypt yourself (below).</td></tr>
     </table>
 
     <h2>Security and anonymity (max-offline)</h2>
     <div class="card warn">
       <p><strong>Will break or hobble:</strong> Microsoft Store, OneDrive, Xbox Live, “Sign in with Microsoft,” cloud clipboard.</p>
-      <p><strong>Stays:</strong> Defender, SmartScreen, Windows Update, BitLocker, local files.</p>
+      <p><strong>Stays:</strong> Defender, SmartScreen, Windows Update, local files. Disk encryption if you already set it up.</p>
       <p><strong>Still visible:</strong> board UUID, TPM, MachineGuid, and your ISP IP unless Mullvad is also running <em>on Windows</em>.</p>
       <p>If <code>sk1tz</code> is a Microsoft account: Settings → Accounts → Your info → Sign in with a local account, then re-run <code>Apply-X47Anonymity.bat</code>.</p>
       <p>Undo hosts + X47-Anon firewall: <code>C:\X47\Apply-X47Anonymity.ps1 -Revert</code></p>
@@ -90,42 +89,39 @@
       <p>This does <strong>not</strong> patch <code>uxtheme</code> or ship Microsoft Luna/Aero files. Window title bars stay Windows 11. The XP/Vista feel is Start menu + taskbar + wallpaper + color.</p>
     </div>
 
-    <h2>Two passwords, on purpose</h2>
-    <div class="card">
-      <p>Ubuntu already asks for <strong>LUKS</strong> before Linux starts.</p>
-      <p>Windows will now ask for a <strong>BitLocker PIN</strong> after you pick Windows in GRUB / the firmware menu.</p>
-      <p>One secret will never unlock both. That is what “works when dual booting” means: each OS unlocks itself; GRUB is not encrypted.</p>
-    </div>
-
-    <h2>After you return to Ubuntu</h2>
-    <div class="card">
-      <p>The USB copy is the one that matters. After encryption, Linux cannot read <code>C:\X47</code> without the key.</p>
-      <p><code>x47-windows-import-key /media/$USER/&lt;USB&gt;/X47-BitLocker-Recovery-*.txt</code></p>
-      <p>That stores <code>~/.config/x47/bitlocker-recovery.txt</code> (mode 0600) for X47 Ark / <code>dislocker</code>, then checks that Ubuntu is still the EFI default.</p>
-    </div>
-
-    <h2>If Windows asks for the 48-digit key</h2>
+    <h2>Disk encryption — advised, not required</h2>
     <div class="card warn">
-      <p>An Ubuntu shim/GRUB update can change EFI PCRs. The PIN still works most of the time; if Windows falls back to the recovery key, type the 48 digits once.</p>
-      <p>Before a big Ubuntu bootloader update you can, from Windows:</p>
-      <p><code>manage-bde -protectors -disable C:</code> (suspend) → update Ubuntu → boot Windows with PIN → <code>manage-bde -protectors -enable C:</code></p>
+      <p>Without encryption, anyone with the drive (or Linux on this PC) can read the Windows files. Use <strong>one</strong> of the options below. Do not stack BitLocker and VeraCrypt on the same volume.</p>
+    </div>
+    <div class="card">
+      <p><strong>BitLocker</strong> (Windows 11 Pro) — optional kit helper:</p>
+      <p><code>C:\X47\Install-X47Windows.ps1 -EnableBitLocker</code></p>
+      <p>Full-volume XTS-AES 256 with a TPM+PIN. Photograph the 48-digit recovery key (USB + <code>C:\X47\BitLocker-Recovery.txt</code>). Ubuntu LUKS stays separate. After it reaches 100% (<code>manage-bde -status C:</code>), import on Ubuntu:</p>
+      <p><code>x47-windows-import-key /media/$USER/&lt;USB&gt;/X47-BitLocker-Recovery-*.txt</code></p>
+      <p>That stores <code>~/.config/x47/bitlocker-recovery.txt</code> (mode 0600) for X47 Ark / <code>dislocker</code>.</p>
+      <p>If Windows later asks for the 48-digit key after a GRUB update, type it once. You can suspend protectors before a big bootloader update: <code>manage-bde -protectors -disable C:</code> then <code>-enable</code> after Windows boots.</p>
+    </div>
+    <div class="card">
+      <p><strong>VeraCrypt</strong> (Home or Pro) — this kit does <em>not</em> install or configure it.</p>
+      <p>Download only from <a href="https://www.veracrypt.fr/">veracrypt.fr</a>. A <strong>file container</strong> is the simple path: keep private files in the volume; open it on Windows, and on Linux if you install VeraCrypt there too.</p>
+      <p>Full <strong>system-disk</strong> encryption is possible (pre-boot password) but read VeraCrypt’s own dual-boot documentation first. Combining VeraCrypt system encryption with GRUB is easy to get wrong. If you only need “Linux cannot casually read C:”, a container or BitLocker is safer than guessing at system encryption.</p>
     </div>
 
     <h2>What we cannot remove</h2>
     <div class="card bad">
       <ul>
         <li><strong>SMBIOS / board UUID</strong> — firmware.</li>
-        <li><strong>MachineGuid</strong> — wiping it breaks activation, Update, and BitLocker.</li>
-        <li><strong>TPM endorsement key</strong> — required for BitLocker.</li>
+        <li><strong>MachineGuid</strong> — wiping it breaks activation and Update (and BitLocker if you use it).</li>
+        <li><strong>TPM endorsement key</strong> — firmware; needed if you later turn on BitLocker.</li>
         <li>Telemetry cannot go to “Security only” on Pro (Enterprise SKU only). Required is the floor.</li>
       </ul>
     </div>
 
     <h2>Skip or redo a piece</h2>
-    <p><code>C:\X47\Install-X47Windows.ps1 -SkipBitLocker</code></p>
+    <p>Default install skips encryption. Opt in later: <code>C:\X47\Install-X47Windows.ps1 -EnableBitLocker</code></p>
     <p>Theme only: <code>C:\X47\Apply-X47Theme.ps1 -Theme xp-remastered</code></p>
     <p>Anonymity only: <code>C:\X47\Apply-X47Anonymity.bat</code> &nbsp; Revert: <code>Apply-X47Anonymity.ps1 -Revert</code></p>
-    <p>Re-export the recovery key only: <code>.\modules\05-bitlocker.ps1 -SkipEncrypt</code></p>
+    <p>Re-export a BitLocker recovery key only: <code>.\modules\05-bitlocker.ps1 -SkipEncrypt</code></p>
 
     <footer>Part of the Ubuntu X47 build. This kit does not reclaim the Windows partition (that is X47 Ark).</footer>
   </div>

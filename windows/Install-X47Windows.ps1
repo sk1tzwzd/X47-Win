@@ -1,14 +1,15 @@
 #requires -RunAsAdministrator
 <#
 .SYNOPSIS
-  X47 Windows 11 privacy twin — wallpaper, debloat, privacy, IDs, BitLocker+PIN.
+  X47 Windows 11 privacy kit — wallpaper, debloat, privacy, IDs, security.
+  Disk encryption is advised, not required. BitLocker is opt-in; VeraCrypt is DIY.
 
 .EXAMPLE
   Set-ExecutionPolicy Bypass -Scope Process
   C:\X47\Install-X47Windows.ps1
 
 .EXAMPLE
-  C:\X47\Install-X47Windows.ps1 -SkipBitLocker
+  C:\X47\Install-X47Windows.ps1 -EnableBitLocker
 #>
 [CmdletBinding()]
 param(
@@ -16,6 +17,7 @@ param(
     [switch]$SkipDebloat,
     [switch]$SkipPrivacy,
     [switch]$SkipIdentifiers,
+    [switch]$EnableBitLocker,
     [switch]$SkipBitLocker,
     [switch]$SkipSecurity,
     [switch]$SkipAnonymity,
@@ -23,6 +25,7 @@ param(
     [ValidateSet('x47','xp','xp-remastered','vista','win10','win11')]
     [string]$Theme
 )
+$runBitLocker = $EnableBitLocker -and -not $SkipBitLocker
 
 $ErrorActionPreference = 'Stop'
 $KitRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -36,7 +39,7 @@ X47-Log ("user={0} host={1} edition={2}" -f $env:USERNAME, $env:COMPUTERNAME, (G
 
 Write-Host ''
 Write-Host '========================================' -ForegroundColor Cyan
-Write-Host ' X47 Windows 11 — privacy twin' -ForegroundColor Cyan
+Write-Host ' X47-Win — privacy kit' -ForegroundColor Cyan
 Write-Host '========================================' -ForegroundColor Cyan
 Write-Host 'This will:'
 Write-Host '  1. Set wallpaper (X47, or XP / Vista / Win10 / Win11 look)'
@@ -52,12 +55,21 @@ if (-not $SkipAnonymity) {
 if (-not $SkipTheme) {
     Write-Host '  7. Apply a look (XP, remastered XP, Vista, Win10, Win11, or X47)'
 }
-if (-not $SkipBitLocker) {
-    Write-Host '  8. Turn on BitLocker with a pre-boot PIN (full volume)'
+if ($runBitLocker) {
+    Write-Host '  8. Turn on BitLocker with a pre-boot PIN (full volume) — you opted in'
+} else {
+    Write-Host '  8. Skip disk encryption (default)'
 }
 Write-Host ''
-Write-Host 'Stay on AC power. Have a USB stick ready for the recovery key.'
-Write-Host 'Ubuntu dual-boot stays on GRUB. The PIN only unlocks Windows.'
+Write-Host 'Disk encryption is advised, not required. This kit does not turn it on'
+Write-Host 'unless you pass -EnableBitLocker. VeraCrypt is also fine — install it'
+Write-Host 'yourself from https://www.veracrypt.fr/  Do not stack BitLocker and'
+Write-Host 'VeraCrypt on the same volume. See C:\X47\docs\x47-windows-guide.html'
+Write-Host ''
+if ($runBitLocker) {
+    Write-Host 'Stay on AC power. Have a USB stick ready for the BitLocker recovery key.'
+    Write-Host 'The PIN only unlocks Windows. Ubuntu LUKS stays separate.'
+}
 Write-Host 'Store / OneDrive / Xbox / Microsoft sign-in will likely break. Update stays.'
 Write-Host ''
 $go = Read-Host 'Type YES to continue'
@@ -74,7 +86,7 @@ $steps = @(
     @{ Flag = $SkipSecurity;     Name = '07-security.ps1' }
     @{ Flag = $SkipAnonymity;    Name = '08-anonymity.ps1' }
     @{ Flag = $SkipTheme;        Name = '06-themes.ps1' }
-    @{ Flag = $SkipBitLocker;    Name = '05-bitlocker.ps1' }
+    @{ Flag = (-not $runBitLocker); Name = '05-bitlocker.ps1' }
 )
 
 $failed = @()
@@ -107,10 +119,15 @@ if ($failed.Count -gt 0) {
 X47-Log 'X47 Windows kit finished' 'OK'
 Write-Host ''
 Write-Host 'Next:' -ForegroundColor Green
-Write-Host '  • If BitLocker is encrypting, wait for manage-bde -status C: = 100%'
-Write-Host '  • Keep the USB recovery key. Photograph it.'
-Write-Host '  • Shut down (not restart-from-Fast-Startup). Boot Ubuntu from GRUB.'
-Write-Host '  • On Ubuntu: x47-windows-import-key /path/to/X47-BitLocker-Recovery-*.txt'
+Write-Host '  • Encrypt the disk when you can: BitLocker (Pro) or VeraCrypt (Home/Pro).'
+if ($runBitLocker) {
+    Write-Host '  • Wait for manage-bde -status C: = 100%. Photograph the USB recovery key.'
+    Write-Host '  • On Ubuntu: x47-windows-import-key /path/to/X47-BitLocker-Recovery-*.txt'
+} else {
+    Write-Host '  • BitLocker later: C:\X47\Install-X47Windows.ps1 -EnableBitLocker'
+    Write-Host '  • VeraCrypt: download from veracrypt.fr — do not stack it on BitLocker.'
+}
+Write-Host '  • Shut down fully (not Fast Startup). Dual-boot from GRUB as usual.'
 Write-Host "  • Guide: $KitRoot\docs\x47-windows-guide.html"
 Write-Host '  • Change the look later: C:\X47\Apply-X47Theme.bat'
 Write-Host '  • Anonymity only / revert: C:\X47\Apply-X47Anonymity.bat'

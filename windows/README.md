@@ -4,7 +4,7 @@ PowerShell pack for this repo. Ubuntu X47 is a [separate project](https://sk1tzw
 
 **Site:** [Overview](https://sk1tzwzd.github.io/X47-Win/) · [Install](https://sk1tzwzd.github.io/X47-Win/install.html) · [Security](https://sk1tzwzd.github.io/X47-Win/security.html)
 
-Run **from Windows 11 Pro, as Administrator**. Staging from Linux only copies files.
+Run **from Windows 11 (Home or Pro), as Administrator**. Staging from Linux only copies files. Encryption is advised, not required.
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process
@@ -15,7 +15,7 @@ Or right-click `Install-X47Windows.bat` → Run as administrator.
 
 ## Security and privacy (short)
 
-**Keeps:** Defender, SmartScreen, Windows Update, BitLocker, local files.
+**Keeps:** Defender, SmartScreen, Windows Update, local files. BitLocker is opt-in (`-EnableBitLocker`). VeraCrypt is fine — install it yourself from [veracrypt.fr](https://www.veracrypt.fr/); do not stack it on BitLocker.
 
 **Locks:** inbound firewall; RDP/WinRM/SMBv1/LLMNR off; UAC max; Recall off; Fast Startup off.
 

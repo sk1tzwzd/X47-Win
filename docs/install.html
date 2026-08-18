@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Install — X47-Win</title>
-  <meta name="description" content="Install X47-Win on Windows 11 Pro: stage C:\X47, run as Administrator, BitLocker PIN, import the key on Ubuntu." />
+  <meta name="description" content="Install X47-Win on Windows 11: stage C:\X47, run as Administrator. Encryption is optional — BitLocker or VeraCrypt." />
   <link rel="icon" href="images/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -26,9 +26,8 @@
     <main>
       <h1 class="page-title">Install X47-Win</h1>
       <p class="section-lead">
-        Needs Windows 11 <strong>Pro</strong> (BitLocker). Stay on AC power.
-        Have a USB stick for the recovery key. If you also run Ubuntu X47 on
-        the same PC, import the key there after encryption.
+        Needs Windows 11 (Home or Pro). Stay on AC power. Disk encryption is
+        advised but the installer does not turn it on.
       </p>
 
       <section>
@@ -61,34 +60,56 @@ C:\X47\Install-X47Windows.ps1</code></pre>
         <h2>3. What the installer asks</h2>
         <ul class="clean">
           <li>A <strong>look</strong> (X47, XP, remastered XP, Vista, Win10, Win11) — you can change it later.</li>
-          <li>A <strong>6+ digit BitLocker PIN</strong> — unlocks Windows only.</li>
-          <li>Photograph the <strong>48-digit recovery key</strong>. It is also written to the USB and <code>C:\X47\BitLocker-Recovery.txt</code>. After encryption, Linux cannot read <code>C:\X47</code> without that USB copy.</li>
+          <li>Type <code>YES</code>. Encryption is skipped unless you passed <code>-EnableBitLocker</code>.</li>
         </ul>
-        <p class="section-lead" style="margin-top:1rem">Wait until encryption finishes:</p>
-        <pre><code>manage-bde -status C:</code></pre>
-        <p class="section-lead">You want 100% and Protection On. Then shut down Windows (do not hibernate).</p>
       </section>
 
       <section>
-        <h2>4. If you also run Ubuntu X47</h2>
+        <h2>4. Encrypt the disk (advised)</h2>
+        <p class="section-lead">
+          An unlocked Windows volume is readable from Linux and if someone
+          pulls the drive. Use <strong>one</strong> method — do not stack
+          BitLocker and VeraCrypt on the same volume.
+        </p>
+        <h3>BitLocker (Windows 11 Pro)</h3>
+        <p class="section-lead">Optional helper in this kit:</p>
+        <pre><code>C:\X47\Install-X47Windows.ps1 -EnableBitLocker</code></pre>
+        <ul class="clean">
+          <li>A <strong>6+ digit PIN</strong> — unlocks Windows only. Ubuntu LUKS stays separate.</li>
+          <li>Photograph the <strong>48-digit recovery key</strong> (USB + <code>C:\X47\BitLocker-Recovery.txt</code>).</li>
+        </ul>
+        <p class="section-lead" style="margin-top:1rem">Wait until encryption finishes:</p>
+        <pre><code>manage-bde -status C:</code></pre>
+        <p class="section-lead">You want 100% and Protection On. Then shut down Windows (do not hibernate). If you also run Ubuntu X47:</p>
         <pre><code>x47-windows-import-key /media/$USER/&lt;USB&gt;/X47-BitLocker-Recovery-*.txt</code></pre>
         <p class="section-lead">
           That helper lives in the
           <a href="https://github.com/sk1tzwzd/ubuntu-x47-build">Ubuntu X47</a>
-          repo. It stores <code>~/.config/x47/bitlocker-recovery.txt</code>
-          (mode 0600) for X47 Ark / dislocker.
+          repo (X47 Ark / dislocker).
+        </p>
+        <h3>VeraCrypt (Home or Pro)</h3>
+        <p class="section-lead">
+          This kit does not install VeraCrypt. Download only from
+          <a href="https://www.veracrypt.fr/">veracrypt.fr</a>.
+          A <strong>file container</strong> is the simple option — open it on
+          Windows, and on Linux if you install VeraCrypt there too.
+          Full system-disk encryption is possible; read VeraCrypt’s own
+          dual-boot notes before you do that with GRUB. Guessing is a good
+          way to lose the Windows boot.
         </p>
       </section>
 
       <section>
-        <h2>Later, without re-doing BitLocker</h2>
+        <h2>Later</h2>
         <pre><code>C:\X47\Apply-X47Theme.bat          # change the look
 C:\X47\Apply-X47Anonymity.bat      # security + max-offline only
-C:\X47\Apply-X47Anonymity.ps1 -Revert   # undo hosts + X47-Anon firewall</code></pre>
+C:\X47\Apply-X47Anonymity.ps1 -Revert   # undo hosts + X47-Anon firewall
+C:\X47\Install-X47Windows.ps1 -EnableBitLocker   # BitLocker later</code></pre>
         <p class="section-lead" style="margin-top:1rem">
-          Skip pieces of the full installer with
-          <code>-SkipBitLocker</code>, <code>-SkipAnonymity</code>,
-          <code>-SkipTheme</code>, and similar flags. See
+          Skip pieces of the installer with
+          <code>-SkipAnonymity</code>,
+          <code>-SkipTheme</code>,
+          and similar flags. See
           <a href="https://github.com/sk1tzwzd/X47-Win/blob/main/windows/START-HERE.txt">START-HERE.txt</a>
           in the kit.
         </p>
@@ -109,8 +130,8 @@ C:\X47\Apply-X47Anonymity.ps1 -Revert   # undo hosts + X47-Anon firewall</code><
             <figcaption>After install — replace with a Windows desktop shot.</figcaption>
           </figure>
           <figure class="shot-placeholder">
-            <div class="ph-body">Screenshot coming — BitLocker PIN</div>
-            <figcaption>Pre-boot PIN screen — replace when you have a photo.</figcaption>
+            <div class="ph-body">Screenshot coming — encryption (optional)</div>
+            <figcaption>BitLocker PIN or VeraCrypt — replace when you have a photo.</figcaption>
           </figure>
         </div>
       </section>

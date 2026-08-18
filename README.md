@@ -1,10 +1,10 @@
 # X47-Win
 
-Windows 11 Pro privacy kit — a separate project from [Ubuntu X47](https://sk1tzwzd.github.io/ubuntu-x47-build/).
+Windows 11 privacy kit — a separate project from [Ubuntu X47](https://sk1tzwzd.github.io/ubuntu-x47-build/). Disk encryption is advised (BitLocker or VeraCrypt), not required.
 
 **Docs site:** [sk1tzwzd.github.io/X47-Win](https://sk1tzwzd.github.io/X47-Win/) · [Install](https://sk1tzwzd.github.io/X47-Win/install.html) · [Security](https://sk1tzwzd.github.io/X47-Win/security.html)
 
-Run **from Windows 11 Pro, as Administrator**. Staging from Linux only copies files.
+Run **from Windows 11 (Home or Pro), as Administrator**. Staging from Linux only copies files.
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process
@@ -15,7 +15,7 @@ Or right-click `Install-X47Windows.bat` → Run as administrator.
 
 ## Security and privacy (short)
 
-**Keeps:** Defender, SmartScreen, Windows Update, BitLocker, local files.
+**Keeps:** Defender, SmartScreen, Windows Update, local files. Encryption if you set it up (BitLocker helper is opt-in: `-EnableBitLocker`; VeraCrypt is DIY from [veracrypt.fr](https://www.veracrypt.fr/)).
 
 **Locks:** inbound firewall; RDP/WinRM/SMBv1/LLMNR off; UAC max; Recall off; Fast Startup off.
 

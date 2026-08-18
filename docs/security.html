@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Security — X47-Win</title>
-  <meta name="description" content="X47-Win security and privacy: BitLocker PIN, inbound firewall, telemetry cut, max-offline Microsoft account block." />
+  <meta name="description" content="X47-Win security and privacy: inbound firewall, telemetry cut, max-offline Microsoft account block. Encryption advised (BitLocker or VeraCrypt)." />
   <link rel="icon" href="images/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -34,13 +34,13 @@
       <section>
         <h2>Security — what we lock down</h2>
         <ul class="clean">
-          <li><strong>BitLocker (XTS-AES 256, full volume)</strong> with a TPM+PIN.
-            Windows asks for your PIN after you pick it in GRUB. Ubuntu’s LUKS
-            password is separate. TPM-only is avoided so an Ubuntu bootloader
-            update is less likely to brick silent unlock.</li>
-          <li><strong>Recovery key</strong> saved to USB (and imported on Ubuntu
-            with <code>x47-windows-import-key</code>) so X47 Ark / dislocker can
-            still read files from Linux.</li>
+          <li><strong>Disk encryption is advised, not required.</strong>
+            The installer does not turn it on. Use <strong>BitLocker</strong>
+            (Pro, optional <code>-EnableBitLocker</code>, TPM+PIN, recovery key
+            to USB) or <strong>VeraCrypt</strong> from
+            <a href="https://www.veracrypt.fr/">veracrypt.fr</a>
+            (container or system disk — not both with BitLocker on the same volume).
+            Ubuntu’s LUKS password stays separate either way.</li>
           <li><strong>Fast Startup off</strong> — required for clean dual-boot and
             so Linux can mount NTFS without a dirty hibernation lock.</li>
           <li><strong>Inbound firewall</strong> blocked on Private/Public. Outbound
@@ -84,7 +84,7 @@
         <div class="aside">
           <strong>This is not a Tor amnesia session.</strong>
           The board UUID, TPM, and Windows <code>MachineGuid</code> stay —
-          wiping them breaks activation and BitLocker. Your ISP still sees
+          wiping them breaks activation (and BitLocker if you use it). Your ISP still sees
           the PC’s IP unless Mullvad (or similar) is running <em>on Windows</em>.
           Store, OneDrive, Xbox Live, and “Sign in with Microsoft” will break.
           Revert hosts with <code>Apply-X47Anonymity.ps1 -Revert</code>.
