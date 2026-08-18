@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X47-Win</title>
+  <meta name="description" content="X47-Win: Windows 11 Pro privacy kit with BitLocker PIN, debloat, and max-offline anonymity. Separate from Ubuntu X47." />
+  <link rel="icon" href="images/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav" aria-label="Primary">
+      <a class="brand" href="index.html"><img src="images/x47duster.png" alt="" width="102" height="102" />X47-<span>Win</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html" aria-current="page">Overview</a></li>
+        <li><a href="install.html">Install</a></li>
+        <li><a href="security.html">Security</a></li>
+        <li><a href="support.html">Support</a></li>
+        <li><a href="https://github.com/sk1tzwzd/X47-Win">GitHub</a></li>
+      </ul>
+    </nav>
+
+    <header class="hero">
+      <p class="free-note">Free and open source — separate from Ubuntu X47</p>
+      <h1 class="hero-brand">X47-<em>Win</em></h1>
+      <p class="hero-lead">
+        A privacy kit for Windows 11 Pro: less junk, less telemetry,
+        BitLocker with a pre-boot PIN that does not break GRUB, and an optional
+        max-offline pass that blocks Microsoft account cloud.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="install.html">Install guide</a>
+        <a class="btn btn-ghost" href="security.html">Security &amp; privacy</a>
+        <a class="btn btn-ghost" href="https://sk1tzwzd.github.io/ubuntu-x47-build/">Ubuntu X47</a>
+      </div>
+      <figure class="shot-placeholder">
+        <div class="ph-body">Screenshot coming — X47-Win desktop</div>
+        <figcaption>Desktop after install — placeholder until a capture is added.</figcaption>
+      </figure>
+    </header>
+
+    <main>
+      <section>
+        <h2>What this is</h2>
+        <p class="section-lead">
+          PowerShell scripts in <code>windows/</code> that you run
+          <strong>once, as Administrator, from Windows 11 Pro</strong>.
+          Linux only copies the folder to <code>C:\X47</code>. It cannot
+          enable BitLocker or change Windows from Ubuntu.
+        </p>
+        <ul class="clean">
+          <li><strong>Same wallpaper option</strong> as Ubuntu X47 (circuit art)</li>
+          <li><strong>Debloat</strong> — Xbox, Widgets, Copilot, OneDrive, consumer junk</li>
+          <li><strong>Privacy</strong> — telemetry cut to Required, ads and location off</li>
+          <li><strong>Security</strong> — inbound firewall, RDP off, Defender stays on</li>
+          <li><strong>Anonymity</strong> — block Microsoft accounts and telemetry hosts</li>
+          <li><strong>BitLocker + PIN</strong> — Windows unlocks itself; Ubuntu still uses LUKS</li>
+          <li><strong>Looks</strong> — XP, remastered XP, Vista, Windows 10, or stock 11</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Get the kit</h2>
+        <p class="section-lead">Source lives on GitHub. There is no store or paid download.</p>
+        <pre><code>git clone https://github.com/sk1tzwzd/X47-Win.git
+cd X47-Win
+./scripts/stage-x47-windows.sh /path/to/WindowsDrive/X47</code></pre>
+        <p class="section-lead" style="margin-top:1rem">
+          Then boot Windows and run <code>C:\X47\Install-X47Windows.bat</code>
+          as Administrator. Full steps on the <a href="install.html">install page</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Looks</h2>
+        <p class="section-lead">
+          Switch anytime with <code>C:\X47\Apply-X47Theme.bat</code>.
+          Screenshots will land here once they are taken.
+        </p>
+        <div class="gallery three">
+          <figure class="shot-placeholder">
+            <div class="ph-body">Screenshot coming — X47 circuit</div>
+            <figcaption>X47 — circuit wallpaper, stock Windows 11 chrome.</figcaption>
+          </figure>
+          <figure class="shot-placeholder">
+            <div class="ph-body">Screenshot coming — Windows XP</div>
+            <figcaption>XP — Luna Start, rectangular taskbar, original hills.</figcaption>
+          </figure>
+          <figure class="shot-placeholder">
+            <div class="ph-body">Screenshot coming — remastered XP</div>
+            <figcaption>Remastered XP — search, large icons, 4K dusk hills.</figcaption>
+          </figure>
+          <figure class="shot-placeholder">
+            <div class="ph-body">Screenshot coming — Windows Vista</div>
+            <figcaption>Vista — Aero Start, transparency, aurora wallpaper.</figcaption>
+          </figure>
+          <figure class="shot-placeholder">
+            <div class="ph-body">Screenshot coming — Windows 10</div>
+            <figcaption>Windows 10 — ExplorerPatcher taskbar.</figcaption>
+          </figure>
+          <figure class="shot-placeholder">
+            <div class="ph-body">Screenshot coming — Windows 11</div>
+            <figcaption>Windows 11 stock — centered Start and taskbar.</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="foot-row">
+        <p>X47-Win — free software. Donations optional.</p>
+        <div class="foot-links">
+          <a href="https://github.com/sk1tzwzd/X47-Win">GitHub</a>
+          <a href="https://buymeacoffee.com/sk1tzwzd">Buy me a coffee</a>
+          <a href="https://sk1tzwzd.github.io/ubuntu-x47-build/">Ubuntu X47</a>
+          <a href="support.html">Support</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

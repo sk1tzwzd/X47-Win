@@ -1,0 +1,10 @@
+**/.env
+**/credentials*
+**/secrets*
+**/BitLocker-Recovery.txt
+**/X47-BitLocker-Recovery-*.txt
+windows/logs/
+*.log
+__pycache__/
+.cache/
+tmp/
