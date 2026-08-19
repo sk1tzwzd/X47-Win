@@ -28,7 +28,7 @@ $meta = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata'
 X47-SetReg -Path $meta -Name PreventDeviceMetadataFromNetwork -Value 1
 
 # Windows Error Reporting user id leftovers.
-Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\Windows Error Reporting' -Name MachineID -Force -ErrorAction SilentlyContinue
+X47-RemoveReg -Path 'HKCU:\Software\Microsoft\Windows\Windows Error Reporting' -Name MachineID
 
 # Inventory of what we will NOT change (for the log / guide).
 $machineGuid = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Cryptography' -Name MachineGuid -ErrorAction SilentlyContinue).MachineGuid

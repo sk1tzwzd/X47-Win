@@ -89,8 +89,13 @@ $tasks = @(
     '\Microsoft\Windows\Maps\MapsUpdateTask'
 )
 foreach ($t in $tasks) {
+    $taskName = Split-Path $t -Leaf
+    $taskPath = (Split-Path $t -Parent) + '\'
+    if (Get-Command X47-JournalTask -ErrorAction SilentlyContinue) {
+        X47-JournalTask -TaskPath $taskPath -TaskName $taskName
+    }
     try {
-        Disable-ScheduledTask -TaskName (Split-Path $t -Leaf) -TaskPath ((Split-Path $t -Parent) + '\') -ErrorAction Stop | Out-Null
+        Disable-ScheduledTask -TaskName $taskName -TaskPath $taskPath -ErrorAction Stop | Out-Null
         X47-Log "disabled task $t" 'OK'
     } catch {
         X47-Log "task not disabled $t" 'WARN'

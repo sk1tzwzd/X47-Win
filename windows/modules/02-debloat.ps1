@@ -148,4 +148,8 @@ foreach ($pat in $provWild) {
 $note = Join-Path $KitRoot 'logs\debloat-removed.txt'
 X47-EnsureLog
 @("removed=$($removed -join ',')", "already_absent=$($skipped -join ',')") | Set-Content -Path $note -Encoding UTF8
-X47-Log "debloat finished ($($removed.Count) removed). Reinstall via Microsoft Store if needed." 'OK'
+$rb = Join-Path $KitRoot 'rollback\appx-removed.txt'
+if (Test-Path (Split-Path $rb)) {
+    $removed | Set-Content -Path $rb -Encoding UTF8
+}
+X47-Log "debloat finished ($($removed.Count) removed). Reinstall via Microsoft Store, or run Rollback-X47Windows.bat." 'OK'

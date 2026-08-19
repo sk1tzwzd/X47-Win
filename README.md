@@ -13,6 +13,8 @@ C:\X47\Install-X47Windows.ps1
 
 Or right-click `Install-X47Windows.bat` → Run as administrator.
 
+The installer writes a snapshot first (`C:\X47\rollback` plus a Windows restore point). It does not delete your documents. Undo with `Rollback-X47Windows.bat` (type `ROLLBACK`).
+
 ## Security and privacy (short)
 
 **Keeps:** Defender, SmartScreen, Windows Update, local files. Encryption if you set it up (BitLocker helper is opt-in: `-EnableBitLocker`; VeraCrypt is DIY from [veracrypt.fr](https://www.veracrypt.fr/)).

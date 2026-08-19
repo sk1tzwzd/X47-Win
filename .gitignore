@@ -4,6 +4,8 @@
 **/BitLocker-Recovery.txt
 **/X47-BitLocker-Recovery-*.txt
 windows/logs/
+windows/rollback/
+windows/rollback-archive-*/
 *.log
 __pycache__/
 .cache/

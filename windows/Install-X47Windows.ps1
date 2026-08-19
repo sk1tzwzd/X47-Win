@@ -22,6 +22,7 @@ param(
     [switch]$SkipSecurity,
     [switch]$SkipAnonymity,
     [switch]$SkipTheme,
+    [switch]$SkipSnapshot,
     [ValidateSet('x47','xp','xp-remastered','vista','win10','win11')]
     [string]$Theme
 )
@@ -42,6 +43,7 @@ Write-Host '========================================' -ForegroundColor Cyan
 Write-Host ' X47-Win — privacy kit' -ForegroundColor Cyan
 Write-Host '========================================' -ForegroundColor Cyan
 Write-Host 'This will:'
+Write-Host '  0. Snapshot first (restore point + C:\X47\rollback) so you can undo'
 Write-Host '  1. Set wallpaper (X47, or XP / Vista / Win10 / Win11 look)'
 Write-Host '  2. Remove Xbox / widgets / Copilot / consumer junk'
 Write-Host '  3. Harden privacy (telemetry Required, ads/location off)'
@@ -70,12 +72,20 @@ if ($runBitLocker) {
     Write-Host 'Stay on AC power. Have a USB stick ready for the BitLocker recovery key.'
     Write-Host 'The PIN only unlocks Windows. Ubuntu LUKS stays separate.'
 }
+Write-Host 'Does not format the disk or delete Documents / Pictures / Desktop.'
+Write-Host 'Undo later: C:\X47\Rollback-X47Windows.bat'
 Write-Host 'Store / OneDrive / Xbox / Microsoft sign-in will likely break. Update stays.'
 Write-Host ''
 $go = Read-Host 'Type YES to continue'
 if ($go -ne 'YES') {
     X47-Log 'aborted by user'
     exit 1
+}
+
+if (-not $SkipSnapshot) {
+    X47-BeginSnapshot -KitRoot $KitRoot
+} else {
+    X47-Log 'snapshot skipped by flag' 'WARN'
 }
 
 $steps = @(
@@ -129,6 +139,7 @@ if ($runBitLocker) {
 }
 Write-Host '  • Shut down fully (not Fast Startup). Dual-boot from GRUB as usual.'
 Write-Host "  • Guide: $KitRoot\docs\x47-windows-guide.html"
+Write-Host '  • Undo everything the kit did: C:\X47\Rollback-X47Windows.bat'
 Write-Host '  • Change the look later: C:\X47\Apply-X47Theme.bat'
 Write-Host '  • Anonymity only / revert: C:\X47\Apply-X47Anonymity.bat'
 Write-Host ''

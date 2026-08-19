@@ -43,7 +43,7 @@
       <ol>
         <li>Stay on AC power.</li>
         <li>Right-click <code>C:\X47\Install-X47Windows.bat</code> → <strong>Run as administrator</strong>.</li>
-        <li>Type <code>YES</code>.</li>
+        <li>Type <code>YES</code>. A snapshot is written first (restore point + <code>C:\X47\rollback</code>).</li>
         <li>Pick a look if asked. Encryption is skipped unless you opted in.</li>
         <li>Shut down Windows fully if you dual-boot (do not hibernate).</li>
       </ol>
@@ -60,6 +60,7 @@
       <tr><td>Security</td><td>Inbound firewall lock, RDP/WinRM/SMBv1/LLMNR off, UAC max, Recall off. Defender and SmartScreen stay on.</td></tr>
       <tr><td>Anonymity</td><td>Block Microsoft accounts, Store/OneDrive/Xbox/telemetry hosts, randomize Wi-Fi MAC, NTP → pool.ntp.org. Standalone: <code>Apply-X47Anonymity.bat</code>.</td></tr>
       <tr><td>Encryption</td><td>Not run by default. Optional BitLocker helper, or use VeraCrypt yourself (below).</td></tr>
+      <tr><td>Snapshot</td><td>Always first. Undo with <code>C:\X47\Rollback-X47Windows.bat</code> (type <code>ROLLBACK</code>). Does not delete your files.</td></tr>
     </table>
 
     <h2>Security and anonymity (max-offline)</h2>
@@ -115,6 +116,13 @@
         <li><strong>TPM endorsement key</strong> — firmware; needed if you later turn on BitLocker.</li>
         <li>Telemetry cannot go to “Security only” on Pro (Enterprise SKU only). Required is the floor.</li>
       </ul>
+    </div>
+
+    <h2>Undo the kit</h2>
+    <div class="card ok">
+      <p>Right-click <code>C:\X47\Rollback-X47Windows.bat</code> → Run as administrator → type <code>ROLLBACK</code>.</p>
+      <p>Restores registry, hosts, services, firewall, wallpaper, NTP. Leaves Documents / Pictures / Desktop alone. Does not turn BitLocker off.</p>
+      <p>Removed Store apps: reinstall from Microsoft Store, or System Restore → <strong>X47-Win before install</strong>.</p>
     </div>
 
     <h2>Skip or redo a piece</h2>

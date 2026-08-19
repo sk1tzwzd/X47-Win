@@ -30,6 +30,8 @@ mkdir -p "$DEST"
 # Avoid copying a previous BitLocker key back over the kit.
 rsync -a --delete \
   --exclude 'logs/' \
+  --exclude 'rollback/' \
+  --exclude 'rollback-archive-*/' \
   --exclude 'BitLocker-Recovery.txt' \
   "$SRC/" "$DEST/"
 
@@ -39,6 +41,7 @@ desk="$win_root/Users/sk1tz/Desktop"
 if [[ -d "$desk" ]] && [[ -w "$desk" ]]; then
   cp -f "$SRC/START-HERE.txt" "$desk/START-HERE-X47.txt" || true
   printf '%s\n' '@echo off' 'C:\X47\Install-X47Windows.bat' >"$desk/X47 Windows Privacy.bat" || true
+  printf '%s\n' '@echo off' 'C:\X47\Rollback-X47Windows.bat' >"$desk/X47 Rollback.bat" || true
 fi
 
 echo "staged → $DEST"

@@ -13,6 +13,8 @@ C:\X47\Install-X47Windows.ps1
 
 Or right-click `Install-X47Windows.bat` → Run as administrator.
 
+Snapshot first; undo with `Rollback-X47Windows.bat`. Does not delete your files.
+
 ## Security and privacy (short)
 
 **Keeps:** Defender, SmartScreen, Windows Update, local files. BitLocker is opt-in (`-EnableBitLocker`). VeraCrypt is fine — install it yourself from [veracrypt.fr](https://www.veracrypt.fr/); do not stack it on BitLocker.

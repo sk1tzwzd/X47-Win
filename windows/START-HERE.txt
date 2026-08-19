@@ -10,8 +10,16 @@ You are on the Windows partition. Do this in Windows, not Ubuntu.
      Set-ExecutionPolicy Bypass -Scope Process
      C:\X47\Install-X47Windows.ps1
 
-3. Type YES when asked.
+3. Type YES when asked. The installer snapshots first (restore point +
+   C:\X47\rollback) so you can undo. It does not delete your files.
 4. Pick a look if prompted. Encryption is NOT turned on by default.
+
+Undo (does not format the disk or turn BitLocker off):
+
+     C:\X47\Rollback-X47Windows.bat
+
+   Type ROLLBACK. Store apps may need the Microsoft Store or
+   System Restore → "X47-Win before install".
 
 Disk encryption (advised, not required)
 ---------------------------------------

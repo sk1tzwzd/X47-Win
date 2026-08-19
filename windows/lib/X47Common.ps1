@@ -1,6 +1,9 @@
 # Shared helpers for the X47 Windows kit. Dot-source from other scripts.
 $script:X47Root = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
 if (-not $script:X47Root) { $script:X47Root = 'C:\X47' }
+$script:X47SnapshotActive = $false
+$rb = Join-Path $PSScriptRoot 'X47Rollback.ps1'
+if (Test-Path $rb) { . $rb }
 
 $script:X47LogDir = Join-Path $script:X47Root 'logs'
 $script:X47LogFile = Join-Path $script:X47LogDir ("x47-windows-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
@@ -39,10 +42,21 @@ function X47-SetReg {
         $Value,
         [Microsoft.Win32.RegistryValueKind]$Type = [Microsoft.Win32.RegistryValueKind]::DWord
     )
+    if (Get-Command X47-JournalReg -ErrorAction SilentlyContinue) {
+        X47-JournalReg -Path $Path -Name $Name -Action 'set'
+    }
     if (-not (Test-Path $Path)) {
         New-Item -Path $Path -Force | Out-Null
     }
     New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force | Out-Null
+}
+
+function X47-RemoveReg {
+    param([string]$Path, [string]$Name)
+    if (Get-Command X47-JournalReg -ErrorAction SilentlyContinue) {
+        X47-JournalReg -Path $Path -Name $Name -Action 'remove'
+    }
+    Remove-ItemProperty -Path $Path -Name $Name -Force -ErrorAction SilentlyContinue
 }
 
 function X47-DisableService {
@@ -51,6 +65,9 @@ function X47-DisableService {
     if (-not $svc) {
         X47-Log "service $Name not present — skip"
         return
+    }
+    if (Get-Command X47-JournalService -ErrorAction SilentlyContinue) {
+        X47-JournalService -Name $Name
     }
     try {
         if ($svc.Status -ne 'Stopped') {

@@ -23,6 +23,10 @@ Write-Host ''
 $go = Read-Host 'Type YES to continue'
 if ($go -ne 'YES') { exit 1 }
 
+if (-not (Test-Path (Join-Path $KitRoot 'rollback\created.txt'))) {
+    X47-BeginSnapshot -KitRoot $KitRoot
+}
+
 & (Join-Path $KitRoot 'modules\07-security.ps1') -KitRoot $KitRoot
 & (Join-Path $KitRoot 'modules\08-anonymity.ps1') -KitRoot $KitRoot
 Write-Host 'Done. Sign out recommended. Revert hosts: Apply-X47Anonymity.ps1 -Revert' -ForegroundColor Green
