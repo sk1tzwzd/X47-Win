@@ -3,6 +3,7 @@
 **/secrets*
 **/BitLocker-Recovery.txt
 **/X47-BitLocker-Recovery-*.txt
+windows/X47Setup.exe
 windows/logs/
 windows/rollback/
 windows/rollback-archive-*/

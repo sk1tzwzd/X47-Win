@@ -6,12 +6,13 @@ PowerShell pack for this repo. Ubuntu X47 is a [separate project](https://sk1tzw
 
 Run **from Windows 11 (Home or Pro), as Administrator**. Staging from Linux only copies files. Encryption is advised, not required.
 
+Double-click `Launch-X47Setup.bat` — first run builds `X47Setup.exe`, then a wizard lets you pick the default look and which features to apply.
+
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process
-C:\X47\Install-X47Windows.ps1
+C:\X47\Install-X47Windows.ps1          # console
+C:\X47\Install-X47Windows.bat /cli     # same, via the old YES prompt
 ```
-
-Or right-click `Install-X47Windows.bat` → Run as administrator.
 
 Snapshot first; undo with `Rollback-X47Windows.bat`. Does not delete your files.
 

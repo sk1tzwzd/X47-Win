@@ -4,17 +4,24 @@ X47-Win — start here
 You are on the Windows partition. Do this in Windows, not Ubuntu.
 
 1. Stay on AC power.
-2. Right-click Install-X47Windows.bat → Run as administrator
-   or in an Administrator PowerShell:
+2. Double-click C:\X47\Launch-X47Setup.bat
+   or C:\X47\Install-X47Windows.bat
+   (first run compiles X47Setup.exe, then the setup GUI opens).
 
-     Set-ExecutionPolicy Bypass -Scope Process
-     C:\X47\Install-X47Windows.ps1
+   Or, after that first compile, double-click:
+     C:\X47\X47Setup.exe
+     Desktop\X47-Win Setup.exe
 
-3. Type YES when asked. The installer snapshots first (restore point +
-   C:\X47\rollback) so you can undo. It does not delete your files.
-4. Pick a look if prompted. Encryption is NOT turned on by default.
-   MachineGuid is NOT changed unless you passed -SpoofMachineGuid
-   and typed SPOOF (breaks activation; hardware IDs stay).
+3. The wizard:
+     Welcome → pick a default look (X47 circuit is selected) →
+     tick the features you want → Install.
+
+   Snapshot is on by default. BitLocker and MachineGuid spoof stay off
+   unless you check them (each shows a warning). The kit does not delete
+   your files.
+
+   Console-only (no GUI):  C:\X47\Install-X47Windows.bat /cli
+   Then type YES when asked.
 
 Undo (does not format the disk or turn BitLocker off):
 
@@ -28,7 +35,7 @@ Disk encryption (advised, not required)
 An unlocked Windows disk is readable from Linux and if someone pulls the drive.
 Use one method, not both on the same volume:
 
-  BitLocker (Windows 11 Pro) — optional helper in this kit:
+  BitLocker (Windows 11 Pro) — optional checkbox in the setup GUI, or:
 
      C:\X47\Install-X47Windows.ps1 -EnableBitLocker
 

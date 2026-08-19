@@ -24,10 +24,12 @@ param(
     [switch]$SkipTheme,
     [switch]$SkipSnapshot,
     [switch]$SpoofMachineGuid,
+    [switch]$Quiet,
     [ValidateSet('x47','xp','xp-remastered','vista','win10','win11')]
     [string]$Theme
 )
 $runBitLocker = $EnableBitLocker -and -not $SkipBitLocker
+if ($Quiet -and -not $Theme) { $Theme = 'x47' }
 
 $ErrorActionPreference = 'Stop'
 $KitRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -80,13 +82,17 @@ Write-Host 'Does not format the disk or delete Documents / Pictures / Desktop.'
 Write-Host 'Undo later: C:\X47\Rollback-X47Windows.bat'
 Write-Host 'Store / OneDrive / Xbox / Microsoft sign-in will likely break. Update stays.'
 Write-Host ''
-$go = Read-Host 'Type YES to continue'
-if ($go -ne 'YES') {
-    X47-Log 'aborted by user'
-    exit 1
+if (-not $Quiet) {
+    $go = Read-Host 'Type YES to continue'
+    if ($go -ne 'YES') {
+        X47-Log 'aborted by user'
+        exit 1
+    }
+} else {
+    X47-Log 'confirmed by setup GUI (-Quiet)'
 }
 
-if ($SpoofMachineGuid) {
+if ($SpoofMachineGuid -and -not $Quiet) {
     Write-Host ''
     Write-Host 'MachineGuid spoof is optional and ON for this run.' -ForegroundColor Yellow
     Write-Host 'It replaces HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid.' -ForegroundColor Yellow
@@ -98,6 +104,8 @@ if ($SpoofMachineGuid) {
         $SpoofMachineGuid = $false
         X47-Log 'MachineGuid spoof skipped after warning'
     }
+} elseif ($SpoofMachineGuid) {
+    X47-Log 'MachineGuid spoof confirmed by setup GUI'
 }
 
 if (-not $SkipSnapshot) {

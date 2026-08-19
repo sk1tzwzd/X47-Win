@@ -6,12 +6,14 @@ Windows 11 privacy kit — a separate project from [Ubuntu X47](https://sk1tzwzd
 
 Run **from Windows 11 (Home or Pro), as Administrator**. Staging from Linux only copies files.
 
+Double-click `C:\X47\Launch-X47Setup.bat` (or `Install-X47Windows.bat`). The first run compiles `X47Setup.exe` with the built-in C# compiler, then opens a setup wizard: default look (X47 circuit) plus checkboxes for every feature. After that you can run `C:\X47\X47Setup.exe` or the copy on the Desktop.
+
+Console-only: `Install-X47Windows.bat /cli` then type `YES`.
+
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process
 C:\X47\Install-X47Windows.ps1
 ```
-
-Or right-click `Install-X47Windows.bat` → Run as administrator.
 
 The installer writes a snapshot first (`C:\X47\rollback` plus a Windows restore point). It does not delete your documents. Undo with `Rollback-X47Windows.bat` (type `ROLLBACK`).
 
@@ -46,5 +48,6 @@ See `windows/START-HERE.txt` and `windows/docs/x47-windows-guide.html`.
 - **MAC randomization** — all physical NICs (software override)
 - **Encryption optional** — `-EnableBitLocker` or VeraCrypt from [veracrypt.fr](https://www.veracrypt.fr/)
 - **MachineGuid optional** — `-SpoofMachineGuid` then `SPOOF` (breaks activation; SMBIOS/TPM unchanged)
+- **Setup GUI** — `X47Setup.exe` (theme picker + feature checkboxes). Source: `windows/setup/`
 - **Looks** — `Apply-X47Theme.bat`
 - **Not disk reclaim** — deleting Windows so Ubuntu owns the disk is [X47 Ark](https://sk1tzwzd.github.io/ubuntu-x47-build/ark.html) on Ubuntu

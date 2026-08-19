@@ -24,10 +24,11 @@
     </nav>
 
     <header class="hero">
-      <p class="free-note">Free and open source — separate from Ubuntu X47</p>
+      <p class="free-note">1.1.0 — setup wizard · free and open source — separate from Ubuntu X47</p>
       <h1 class="hero-brand">X47-<em>Win</em></h1>
       <p class="hero-lead">
-        A privacy kit for Windows 11: less junk, less telemetry, randomized
+        A privacy kit for Windows 11 with a setup GUI: pick a default look
+        and which features to apply. Less junk, less telemetry, randomized
         physical NIC MACs, a snapshot you can roll back, and an optional
         max-offline pass. Disk encryption is advised, not required.
       </p>
@@ -46,7 +47,8 @@
       <section>
         <h2>What this is</h2>
         <p class="section-lead">
-          PowerShell scripts in <code>windows/</code> that you run
+          A setup wizard (<code>X47Setup.exe</code>) plus PowerShell
+          scripts in <code>windows/</code> that you run
           <strong>once, as Administrator, from Windows 11</strong>
           (Home or Pro). Linux only copies the folder to <code>C:\X47</code>.
           It cannot change Windows from Ubuntu.
@@ -75,6 +77,7 @@
           <li><strong>MAC randomization</strong> — software override on every physical NIC (Wi-Fi and Ethernet). VPN adapters skipped. Factory MAC stays in firmware</li>
           <li><strong>Encryption</strong> — optional BitLocker helper, or VeraCrypt yourself. Not required to install</li>
           <li><strong>MachineGuid</strong> — unchanged unless <code>-SpoofMachineGuid</code> + type <code>SPOOF</code>. Breaks activation. Board UUID and TPM still identify the PC</li>
+          <li><strong>Setup GUI</strong> — <code>X47Setup.exe</code> wizard: default look plus a checkbox for every feature</li>
           <li><strong>Looks</strong> — X47, XP, remastered XP, Vista, Win10, Win11</li>
           <li><strong>Not Ark</strong> — this kit does not delete the Windows partition. Reclaiming the disk for Ubuntu is <a href="https://sk1tzwzd.github.io/ubuntu-x47-build/ark.html">X47 Ark</a> on Linux</li>
         </ul>
@@ -87,8 +90,9 @@
 cd X47-Win
 ./scripts/stage-x47-windows.sh /path/to/WindowsDrive/X47</code></pre>
         <p class="section-lead" style="margin-top:1rem">
-          Then boot Windows and run <code>C:\X47\Install-X47Windows.bat</code>
-          as Administrator. Full steps on the <a href="install.html">install page</a>.
+          Then boot Windows and run <code>C:\X47\Launch-X47Setup.bat</code>
+          (first run builds the setup GUI). Full steps on the
+          <a href="install.html">install page</a>.
         </p>
       </section>
 

@@ -24,9 +24,10 @@
     </nav>
 
     <main>
-      <h1 class="page-title">Install X47-Win</h1>
+      <h1 class="page-title">Install X47-Win 1.1.0</h1>
       <p class="section-lead">
-        Needs Windows 11 (Home or Pro). Stay on AC power. The installer
+        Needs Windows 11 (Home or Pro). Stay on AC power. The setup GUI
+        lets you pick a default look and which features to apply. It
         snapshots first so you can roll back. Disk encryption is advised
         but not turned on.
       </p>
@@ -49,24 +50,29 @@ cd X47-Win
           Shut down Linux fully. In GRUB or firmware pick Windows.
           Open File Explorer → <code>C:\X47</code>.
         </p>
-        <pre><code>Right-click Install-X47Windows.bat → Run as administrator
+        <pre><code>Double-click Launch-X47Setup.bat
+# or Install-X47Windows.bat
+# first run compiles X47Setup.exe, then the wizard opens
+# later: C:\X47\X47Setup.exe  or  Desktop\X47-Win Setup.exe
 
-# or in an Administrator PowerShell:
-Set-ExecutionPolicy Bypass -Scope Process
-C:\X47\Install-X47Windows.ps1</code></pre>
-        <p class="section-lead" style="margin-top:1rem">Type <code>YES</code> when asked.</p>
+# console only (no GUI):
+C:\X47\Install-X47Windows.bat /cli</code></pre>
+        <p class="section-lead" style="margin-top:1rem">
+          UAC will ask for Administrator. The wizard does not write anything
+          until the last page, <strong>Install</strong>.
+        </p>
       </section>
 
       <section>
-        <h2>3. What the installer asks</h2>
+        <h2>3. What the setup GUI asks</h2>
         <ul class="clean">
-          <li>Type <code>YES</code>. A <strong>snapshot</strong> is written first (Windows restore point + <code>C:\X47\rollback</code>).</li>
-          <li>A <strong>look</strong> (X47, XP, remastered XP, Vista, Win10, Win11) — you can change it later.</li>
-          <li>Encryption is skipped unless you passed <code>-EnableBitLocker</code>.</li>
+          <li><strong>Default look</strong> — X47 circuit is selected. Also XP, remastered XP, Vista, Win10, Win11. Change later with <code>Apply-X47Theme.bat</code>.</li>
+          <li><strong>Features</strong> — snapshot, wallpaper, debloat, privacy, ID rotation, security, max-offline anonymity, apply look. All on by default. Uncheck to skip.</li>
+          <li><strong>Optional</strong> — BitLocker + PIN, and MachineGuid spoof. Both off. Each shows a warning if you turn it on.</li>
         </ul>
         <p class="section-lead">
           The kit does not format the disk or delete Documents, Pictures, or Desktop.
-          If you do not want apps removed, use <code>-SkipDebloat</code>.
+          A snapshot is written first unless you uncheck it.
         </p>
       </section>
 
@@ -121,7 +127,8 @@ C:\X47\Install-X47Windows.ps1</code></pre>
 
       <section>
         <h2>Later</h2>
-        <pre><code>C:\X47\Apply-X47Theme.bat          # change the look
+        <pre><code>C:\X47\X47Setup.exe                # setup GUI again
+C:\X47\Apply-X47Theme.bat          # change the look
 C:\X47\Apply-X47Anonymity.bat      # security + max-offline only
 C:\X47\Apply-X47Anonymity.ps1 -Revert   # undo hosts + X47-Anon firewall
 C:\X47\Install-X47Windows.ps1 -EnableBitLocker   # BitLocker later

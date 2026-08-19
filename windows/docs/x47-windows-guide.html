@@ -42,9 +42,9 @@
       <strong style="color:var(--ink)">Do this once, in Windows, as Administrator</strong>
       <ol>
         <li>Stay on AC power.</li>
-        <li>Right-click <code>C:\X47\Install-X47Windows.bat</code> → <strong>Run as administrator</strong>.</li>
-        <li>Type <code>YES</code>. A snapshot is written first (restore point + <code>C:\X47\rollback</code>).</li>
-        <li>Pick a look if asked. Encryption is skipped unless you opted in.</li>
+        <li>Double-click <code>C:\X47\Launch-X47Setup.bat</code> (first run compiles <code>X47Setup.exe</code>).</li>
+        <li>Pick a default look (X47 is selected) and which features to apply. Snapshot is on; BitLocker is off.</li>
+        <li>Click <strong>Install</strong>. A PowerShell window does the work. Encryption is skipped unless you checked BitLocker.</li>
         <li>Shut down Windows fully if you dual-boot (do not hibernate).</li>
       </ol>
     </div>

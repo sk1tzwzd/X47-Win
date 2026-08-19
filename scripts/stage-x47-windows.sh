@@ -40,9 +40,12 @@ win_root="$(dirname "$DEST")"
 desk="$win_root/Users/sk1tz/Desktop"
 if [[ -d "$desk" ]] && [[ -w "$desk" ]]; then
   cp -f "$SRC/START-HERE.txt" "$desk/START-HERE-X47.txt" || true
+  printf '%s\n' '@echo off' 'call C:\X47\Launch-X47Setup.bat' >"$desk/X47-Win Setup.bat" || true
+  printf '%s\n' '@echo off' 'call C:\X47\Launch-X47Setup.bat' >"$desk/Install X47-Win.bat" || true
   printf '%s\n' '@echo off' 'C:\X47\Install-X47Windows.bat' >"$desk/X47 Windows Privacy.bat" || true
+  printf '%s\n' '@echo off' 'C:\X47\Rollback-X47Windows.bat' >"$desk/Rollback X47-Win.bat" || true
   printf '%s\n' '@echo off' 'C:\X47\Rollback-X47Windows.bat' >"$desk/X47 Rollback.bat" || true
 fi
 
 echo "staged → $DEST"
-echo "boot Windows and run: C:\\X47\\Install-X47Windows.bat (as Administrator)"
+echo "boot Windows and run: C:\\X47\\X47Setup.exe  (or Launch-X47Setup.bat — first run compiles the GUI)"
