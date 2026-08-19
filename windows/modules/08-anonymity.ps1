@@ -1,4 +1,4 @@
-# Max-offline anonymity: block MSA/cloud/telemetry hosts, randomize Wi-Fi MAC, move NTP.
+# Max-offline anonymity: block MSA/cloud/telemetry hosts, randomize physical NIC MACs, move NTP.
 # Does not wipe MachineGuid / SMBIOS / TPM. Does not hide your IP (use Mullvad on Windows for that).
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' }),
@@ -44,6 +44,9 @@ if ($Revert) {
     }
     Get-NetFirewallRule -Group 'X47-Anon' -ErrorAction SilentlyContinue | Remove-NetFirewallRule -ErrorAction SilentlyContinue
     X47-Log 'X47-Anon firewall rules removed' 'OK'
+    if (Get-Command X47-RestoreMacs -ErrorAction SilentlyContinue) {
+        X47-RestoreMacs
+    }
     return
 }
 
@@ -103,20 +106,15 @@ foreach ($n in $names) {
 }
 X47-Log "firewall X47-Anon rules for $resolved resolved names (others rely on hosts)"
 
-# Wi-Fi random hardware address
+# Software MAC override on every physical NIC (Wi-Fi + Ethernet). Skips VPN/virtual.
+# Factory burned-in address stays in firmware; rollback restores the OS override.
 try {
-    $wifi = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' -and $_.MediaType -match '802.11|Native 802.11|Wireless' }
-    if (-not $wifi) { $wifi = Get-NetAdapter | Where-Object { $_.InterfaceDescription -match 'Wi-?Fi|Wireless|802.11' } }
-    foreach ($if in $wifi) {
-        try {
-            Set-NetAdapterAdvancedProperty -Name $if.Name -DisplayName 'Network Address' -DisplayValue 'Random' -ErrorAction SilentlyContinue
-        } catch {}
-        X47-SetReg -Path 'HKLM:\SOFTWARE\Microsoft\WcmSvc\TetheringManager' -Name TetheringEnabled -Value 0
+    if (Get-Command X47-RandomizePhysicalMacs -ErrorAction SilentlyContinue) {
+        X47-RandomizePhysicalMacs
     }
-    # Win11 per-network random MAC (interface GUID)
-    X47-SetReg -Path 'HKLM:\SOFTWARE\Microsoft\WlanSvc\AnqpCache' -Name OsuFailCount -Value 0
+    X47-SetReg -Path 'HKLM:\SOFTWARE\Microsoft\WcmSvc\TetheringManager' -Name TetheringEnabled -Value 0
     netsh wlan set randomization enabled=yes 2>$null | Out-Null
-    X47-Log 'Wi-Fi MAC randomization enabled (best-effort)' 'OK'
+    X47-Log 'physical NIC MACs randomized (software override; factory MAC unchanged)' 'OK'
 } catch {
     X47-Log "MAC randomization: $($_.Exception.Message)" 'WARN'
 }

@@ -58,7 +58,7 @@
       <tr><td>Identifiers</td><td>Rotates Advertising ID and SQM telemetry ID. Does <strong>not</strong> wipe MachineGuid or the board UUID.</td></tr>
       <tr><td>Look</td><td>Pick XP, remastered XP, Vista, Windows 10, Windows 11, or X47. Switch later with <code>C:\X47\Apply-X47Theme.bat</code>.</td></tr>
       <tr><td>Security</td><td>Inbound firewall lock, RDP/WinRM/SMBv1/LLMNR off, UAC max, Recall off. Defender and SmartScreen stay on.</td></tr>
-      <tr><td>Anonymity</td><td>Block Microsoft accounts, Store/OneDrive/Xbox/telemetry hosts, randomize Wi-Fi MAC, NTP → pool.ntp.org. Standalone: <code>Apply-X47Anonymity.bat</code>.</td></tr>
+      <tr><td>Anonymity</td><td>Block Microsoft accounts, Store/OneDrive/Xbox/telemetry hosts, randomize physical NIC MACs (Wi-Fi + Ethernet software override), NTP → pool.ntp.org. Standalone: <code>Apply-X47Anonymity.bat</code>.</td></tr>
       <tr><td>Encryption</td><td>Not run by default. Optional BitLocker helper, or use VeraCrypt yourself (below).</td></tr>
       <tr><td>Snapshot</td><td>Always first. Undo with <code>C:\X47\Rollback-X47Windows.bat</code> (type <code>ROLLBACK</code>). Does not delete your files.</td></tr>
     </table>

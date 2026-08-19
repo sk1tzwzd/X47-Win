@@ -78,13 +78,17 @@
             Xbox Live, and <code>login.live.com</code>. Windows Update and
             Defender definition hosts are <em>not</em> on that list.</li>
           <li><strong>OneDrive uninstalled</strong> (already-synced files stay on disk).</li>
-          <li><strong>Wi-Fi MAC randomization</strong> on. NTP moved off
+          <li><strong>MAC randomization</strong> on every physical NIC (Wi-Fi and
+            Ethernet) as a software override. VPN/virtual adapters are skipped.
+            The factory address stays in firmware. NTP moved off
             <code>time.windows.com</code> to <code>pool.ntp.org</code>.</li>
         </ul>
         <div class="aside">
           <strong>This is not a Tor amnesia session.</strong>
-          The board UUID, TPM, and Windows <code>MachineGuid</code> stay —
-          wiping them breaks activation (and BitLocker if you use it). Your ISP still sees
+          The board UUID and TPM are never changed. <code>MachineGuid</code>
+          stays unless you pass <code>-SpoofMachineGuid</code> and type
+          <code>SPOOF</code> — that breaks activation and still does not hide
+          the hardware. Your ISP still sees
           the PC’s IP unless Mullvad (or similar) is running <em>on Windows</em>.
           Store, OneDrive, Xbox Live, and “Sign in with Microsoft” will break.
           Revert hosts with <code>Apply-X47Anonymity.ps1 -Revert</code>.

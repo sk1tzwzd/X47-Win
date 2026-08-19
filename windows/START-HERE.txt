@@ -13,6 +13,8 @@ You are on the Windows partition. Do this in Windows, not Ubuntu.
 3. Type YES when asked. The installer snapshots first (restore point +
    C:\X47\rollback) so you can undo. It does not delete your files.
 4. Pick a look if prompted. Encryption is NOT turned on by default.
+   MachineGuid is NOT changed unless you passed -SpoofMachineGuid
+   and typed SPOOF (breaks activation; hardware IDs stay).
 
 Undo (does not format the disk or turn BitLocker off):
 

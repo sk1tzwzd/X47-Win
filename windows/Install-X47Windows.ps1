@@ -23,6 +23,7 @@ param(
     [switch]$SkipAnonymity,
     [switch]$SkipTheme,
     [switch]$SkipSnapshot,
+    [switch]$SpoofMachineGuid,
     [ValidateSet('x47','xp','xp-remastered','vista','win10','win11')]
     [string]$Theme
 )
@@ -62,6 +63,9 @@ if ($runBitLocker) {
 } else {
     Write-Host '  8. Skip disk encryption (default)'
 }
+if ($SpoofMachineGuid) {
+    Write-Host '  9. OPTIONAL MachineGuid spoof — breaks activation; does not hide hardware'
+}
 Write-Host ''
 Write-Host 'Disk encryption is advised, not required. This kit does not turn it on'
 Write-Host 'unless you pass -EnableBitLocker. VeraCrypt is also fine — install it'
@@ -80,6 +84,20 @@ $go = Read-Host 'Type YES to continue'
 if ($go -ne 'YES') {
     X47-Log 'aborted by user'
     exit 1
+}
+
+if ($SpoofMachineGuid) {
+    Write-Host ''
+    Write-Host 'MachineGuid spoof is optional and ON for this run.' -ForegroundColor Yellow
+    Write-Host 'It replaces HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid.' -ForegroundColor Yellow
+    Write-Host 'Activation WILL break. BitLocker/Update can break.' -ForegroundColor Yellow
+    Write-Host 'Board UUID and TPM are NOT changed. The PC is still identifiable.' -ForegroundColor Yellow
+    Write-Host 'Rollback can put the old GUID back if you still have C:\X47\rollback.' -ForegroundColor Yellow
+    $guidGo = Read-Host 'Type SPOOF to change MachineGuid, or press Enter to skip'
+    if ($guidGo -ne 'SPOOF') {
+        $SpoofMachineGuid = $false
+        X47-Log 'MachineGuid spoof skipped after warning'
+    }
 }
 
 if (-not $SkipSnapshot) {
@@ -110,6 +128,8 @@ foreach ($step in $steps) {
     try {
         if ($step.Name -eq '06-themes.ps1' -and $Theme) {
             & $path -KitRoot $KitRoot -Theme $Theme
+        } elseif ($step.Name -eq '04-identifiers.ps1' -and $SpoofMachineGuid) {
+            & $path -KitRoot $KitRoot -SpoofMachineGuid
         } else {
             & $path -KitRoot $KitRoot
         }

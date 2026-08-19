@@ -21,9 +21,9 @@ Snapshot first; undo with `Rollback-X47Windows.bat`. Does not delete your files.
 
 **Locks:** inbound firewall; RDP/WinRM/SMBv1/LLMNR off; UAC max; Recall off; Fast Startup off.
 
-**Cuts:** telemetry to Required; ads/location/activity history off; Advertising ID + SQM ID rotated; Microsoft accounts blocked; Store/OneDrive/Xbox/telemetry hosts blocked; OneDrive uninstalled; Wi-Fi MAC random; NTP → pool.ntp.org.
+**Cuts:** telemetry to Required; ads/location/activity history off; Advertising ID + SQM ID rotated; Microsoft accounts blocked; Store/OneDrive/Xbox/telemetry hosts blocked; OneDrive uninstalled; physical NIC MACs randomized (software override); NTP → pool.ntp.org.
 
-**Does not hide:** board UUID, TPM, `MachineGuid`, or your ISP IP (run Mullvad on Windows for that).
+**Does not hide:** board UUID, TPM, `MachineGuid`, or your ISP IP (run Mullvad on Windows for that). Those cannot be hidden without breaking Windows.
 
 **Breaks:** Store, OneDrive, Xbox Live, “Sign in with Microsoft.”
 

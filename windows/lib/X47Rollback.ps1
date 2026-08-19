@@ -96,6 +96,79 @@ function X47-JournalTask {
     } catch {}
 }
 
+function X47-IsVirtualAdapter {
+    param($Adapter)
+    $blob = '{0} {1}' -f $Adapter.Name, $Adapter.InterfaceDescription
+    return $blob -match 'Hyper-V|vEthernet|Virtual|TAP-Windows|Wintun|WireGuard|Mullvad|VPN|Bluetooth|WAN Miniport|Loopback|Npcap'
+}
+
+function X47-GetPhysicalNics {
+    Get-NetAdapter -Physical -ErrorAction SilentlyContinue | Where-Object {
+        -not (X47-IsVirtualAdapter $_)
+    }
+}
+
+function X47-SnapshotMacs {
+    $rows = @()
+    foreach ($if in @(X47-GetPhysicalNics)) {
+        $na = $null
+        try {
+            $prop = Get-NetAdapterAdvancedProperty -Name $if.Name -DisplayName 'Network Address' -ErrorAction SilentlyContinue
+            if ($prop) { $na = [string]$prop.DisplayValue }
+        } catch {}
+        $rows += @{
+            Name              = $if.Name
+            MacAddress        = [string]$if.MacAddress
+            PermanentAddress  = [string]$if.PermanentAddress
+            NetworkAddress    = $na
+        }
+    }
+    X47-WriteJson 'macs.json' $rows
+}
+
+function X47-NewLocalMacHex {
+    $rng = [Security.Cryptography.RandomNumberGenerator]::Create()
+    $b = New-Object byte[] 6
+    $rng.GetBytes($b)
+    $b[0] = [byte](($b[0] -band 0xFE) -bor 0x02)
+    return -join ($b | ForEach-Object { $_.ToString('X2') })
+}
+
+function X47-RandomizePhysicalMacs {
+    foreach ($if in @(X47-GetPhysicalNics)) {
+        $hex = X47-NewLocalMacHex
+        try {
+            Set-NetAdapterAdvancedProperty -Name $if.Name -DisplayName 'Network Address' -DisplayValue $hex -ErrorAction Stop
+            X47-Log ("MAC {0} → {1} (software override)" -f $if.Name, $hex) 'OK'
+        } catch {
+            try {
+                Set-NetAdapter -Name $if.Name -MacAddress $hex -Confirm:$false -ErrorAction Stop
+                X47-Log ("MAC {0} → {1}" -f $if.Name, $hex) 'OK'
+            } catch {
+                X47-Log ("MAC {0}: {1}" -f $if.Name, $_.Exception.Message) 'WARN'
+            }
+        }
+    }
+    netsh wlan set randomization enabled=yes 2>$null | Out-Null
+}
+
+function X47-RestoreMacs {
+    $rows = X47-ReadJson 'macs.json'
+    foreach ($row in @($rows)) {
+        if (-not $row -or -not $row.Name) { continue }
+        try {
+            if ($row.NetworkAddress -and $row.NetworkAddress -notmatch 'Not Present|NotPresent|Absent|^$') {
+                Set-NetAdapterAdvancedProperty -Name $row.Name -DisplayName 'Network Address' -DisplayValue $row.NetworkAddress -ErrorAction Stop
+            } else {
+                Reset-NetAdapterAdvancedProperty -Name $row.Name -DisplayName 'Network Address' -ErrorAction SilentlyContinue
+            }
+            X47-Log "MAC $($row.Name) restored to factory override" 'OK'
+        } catch {
+            X47-Log "MAC restore $($row.Name): $($_.Exception.Message)" 'WARN'
+        }
+    }
+}
+
 function X47-CreateRestorePoint {
     param([string]$Description = 'X47-Win before install')
     $info = @{
@@ -209,6 +282,8 @@ function X47-BeginSnapshot {
         OpenShellPresent       = [bool]$openShell
         ExplorerPatcherPresent = [bool]$ep
     }
+
+    X47-SnapshotMacs
 
     try {
         Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue |
@@ -354,6 +429,8 @@ function X47-RestoreKit {
             X47-Log "firewall $($row.Name): $($_.Exception.Message)" 'WARN'
         }
     }
+
+    X47-RestoreMacs
 
     $ntp = X47-ReadJson 'ntp.json'
     if ($ntp -and $ntp.NtpServer) {

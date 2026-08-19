@@ -27,9 +27,9 @@
       <p class="free-note">Free and open source — separate from Ubuntu X47</p>
       <h1 class="hero-brand">X47-<em>Win</em></h1>
       <p class="hero-lead">
-        A privacy kit for Windows 11: less junk, less telemetry, and an optional
-        max-offline pass that blocks Microsoft account cloud. Disk encryption
-        is advised (BitLocker or VeraCrypt) but the installer does not require it.
+        A privacy kit for Windows 11: less junk, less telemetry, randomized
+        physical NIC MACs, a snapshot you can roll back, and an optional
+        max-offline pass. Disk encryption is advised, not required.
       </p>
       <div class="cta-row">
         <a class="btn btn-primary" href="install.html">Install guide</a>
@@ -57,8 +57,10 @@
           <li><strong>Privacy</strong> — telemetry cut to Required, ads and location off</li>
           <li><strong>Security</strong> — inbound firewall, RDP off, Defender stays on</li>
           <li><strong>Anonymity</strong> — block Microsoft accounts and telemetry hosts</li>
+          <li><strong>MAC randomization</strong> — software override on every physical NIC (Wi-Fi + Ethernet)</li>
           <li><strong>Safe to try</strong> — snapshot first; undo with <code>Rollback-X47Windows.bat</code> (does not delete your files)</li>
           <li><strong>Encryption advised</strong> — BitLocker (optional helper) or VeraCrypt; not required to install</li>
+          <li><strong>MachineGuid</strong> left alone by default. Optional <code>-SpoofMachineGuid</code> warns first — breaks activation, does <em>not</em> hide the board UUID or TPM</li>
           <li><strong>Looks</strong> — XP, remastered XP, Vista, Windows 10, or stock 11</li>
         </ul>
       </section>

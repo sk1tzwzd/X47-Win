@@ -15,15 +15,17 @@ Or right-click `Install-X47Windows.bat` → Run as administrator.
 
 The installer writes a snapshot first (`C:\X47\rollback` plus a Windows restore point). It does not delete your documents. Undo with `Rollback-X47Windows.bat` (type `ROLLBACK`).
 
+Physical NIC MACs are randomized (software override). `MachineGuid` stays unless you pass `-SpoofMachineGuid` and type `SPOOF` — that breaks activation and does not hide the board UUID or TPM.
+
 ## Security and privacy (short)
 
 **Keeps:** Defender, SmartScreen, Windows Update, local files. Encryption if you set it up (BitLocker helper is opt-in: `-EnableBitLocker`; VeraCrypt is DIY from [veracrypt.fr](https://www.veracrypt.fr/)).
 
 **Locks:** inbound firewall; RDP/WinRM/SMBv1/LLMNR off; UAC max; Recall off; Fast Startup off.
 
-**Cuts:** telemetry to Required; ads/location/activity history off; Advertising ID + SQM ID rotated; Microsoft accounts blocked; Store/OneDrive/Xbox/telemetry hosts blocked; OneDrive uninstalled; Wi-Fi MAC random; NTP → pool.ntp.org.
+**Cuts:** telemetry to Required; ads/location/activity history off; Advertising ID + SQM ID rotated; Microsoft accounts blocked; Store/OneDrive/Xbox/telemetry hosts blocked; OneDrive uninstalled; physical NIC MACs randomized (software override); NTP → pool.ntp.org.
 
-**Does not hide:** board UUID, TPM, `MachineGuid`, or your ISP IP (run Mullvad on Windows for that).
+**Does not hide:** board UUID, TPM, `MachineGuid`, or your ISP IP (run Mullvad on Windows for that). Those cannot be hidden without breaking Windows.
 
 **Breaks:** Store, OneDrive, Xbox Live, “Sign in with Microsoft.”
 
