@@ -66,6 +66,21 @@
       </section>
 
       <section>
+        <h2>Features</h2>
+        <ul class="clean">
+          <li><strong>Snapshot + rollback</strong> — restore point and <code>C:\X47\rollback</code> before changes. Undo with <code>Rollback-X47Windows.bat</code> (type <code>ROLLBACK</code>). Does not delete Documents or turn BitLocker off</li>
+          <li><strong>Debloat + privacy</strong> — Xbox, Widgets, Copilot, OneDrive gone; telemetry Required; ads, location, activity history off</li>
+          <li><strong>Security</strong> — inbound firewall, RDP/WinRM/SMBv1 off, UAC max, Recall off, Defender on</li>
+          <li><strong>Max-offline</strong> — block Microsoft accounts and telemetry/Store/Xbox hosts. Update + Defender stay</li>
+          <li><strong>MAC randomization</strong> — software override on every physical NIC (Wi-Fi and Ethernet). VPN adapters skipped. Factory MAC stays in firmware</li>
+          <li><strong>Encryption</strong> — optional BitLocker helper, or VeraCrypt yourself. Not required to install</li>
+          <li><strong>MachineGuid</strong> — unchanged unless <code>-SpoofMachineGuid</code> + type <code>SPOOF</code>. Breaks activation. Board UUID and TPM still identify the PC</li>
+          <li><strong>Looks</strong> — X47, XP, remastered XP, Vista, Win10, Win11</li>
+          <li><strong>Not Ark</strong> — this kit does not delete the Windows partition. Reclaiming the disk for Ubuntu is <a href="https://sk1tzwzd.github.io/ubuntu-x47-build/ark.html">X47 Ark</a> on Linux</li>
+        </ul>
+      </section>
+
+      <section>
         <h2>Get the kit</h2>
         <p class="section-lead">Source lives on GitHub. There is no store or paid download.</p>
         <pre><code>git clone https://github.com/sk1tzwzd/X47-Win.git

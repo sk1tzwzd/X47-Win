@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Docs: features** — site and README list snapshot/rollback, all-NIC MACs, optional encryption, optional MachineGuid spoof, and point disk reclaim at Ubuntu X47 Ark.
 - **Optional MachineGuid spoof** — `-SpoofMachineGuid` then type `SPOOF`. Warns that activation breaks. Does not change SMBIOS UUID or TPM. Reversible from the snapshot.
 - **MAC randomization** — software override on every physical NIC (Wi-Fi + Ethernet). VPN/virtual adapters skipped. Factory MAC stays in firmware; rollback restores it.
 - **Safe install + rollback** — snapshot (restore point + `C:\X47\rollback`) before changes. Undo with `Rollback-X47Windows.bat` (type `ROLLBACK`). Does not delete user files or turn BitLocker off.

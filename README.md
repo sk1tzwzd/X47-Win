@@ -38,3 +38,13 @@ Revert hosts: `Apply-X47Anonymity.ps1 -Revert`
 Open-Shell skins are GPL. No Microsoft theme files.
 
 See `windows/START-HERE.txt` and `windows/docs/x47-windows-guide.html`.
+
+## Features
+
+- **Snapshot + rollback** — restore point + `C:\X47\rollback`. Undo: `Rollback-X47Windows.bat` (type `ROLLBACK`)
+- **Debloat / privacy / security / max-offline** — junk apps out, telemetry Required, inbound lock, MSA/hosts block
+- **MAC randomization** — all physical NICs (software override)
+- **Encryption optional** — `-EnableBitLocker` or VeraCrypt from [veracrypt.fr](https://www.veracrypt.fr/)
+- **MachineGuid optional** — `-SpoofMachineGuid` then `SPOOF` (breaks activation; SMBIOS/TPM unchanged)
+- **Looks** — `Apply-X47Theme.bat`
+- **Not disk reclaim** — deleting Windows so Ubuntu owns the disk is [X47 Ark](https://sk1tzwzd.github.io/ubuntu-x47-build/ark.html) on Ubuntu
