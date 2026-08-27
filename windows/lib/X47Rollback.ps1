@@ -6,6 +6,15 @@ function X47-SnapshotDir {
     return (Join-Path $script:X47Root 'rollback')
 }
 
+# Is there a snapshot to journal into? $global: so the answer survives the jump into a
+# module's own script scope. Unset means "nobody said" — fall back to what is on disk, so
+# standalone Apply-X47Theme / Apply-X47Anonymity runs journal into an existing snapshot
+# instead of silently discarding their undo information.
+function X47-SnapshotIsActive {
+    if ($null -ne $global:X47SnapshotActive) { return [bool]$global:X47SnapshotActive }
+    return (Test-Path (Join-Path (X47-SnapshotDir) 'created.txt'))
+}
+
 function X47-EnsureSnapshotDir {
     $dir = X47-SnapshotDir
     if (-not (Test-Path $dir)) {
@@ -42,7 +51,7 @@ function X47-JournalReg {
         [string]$Name,
         [string]$Action = 'set'
     )
-    if (-not $script:X47SnapshotActive) { return }
+    if (-not (X47-SnapshotIsActive)) { return }
     $existed = $false
     $oldValue = $null
     $oldKind = $null
@@ -67,7 +76,7 @@ function X47-JournalReg {
 
 function X47-JournalService {
     param([string]$Name)
-    if (-not $script:X47SnapshotActive) { return }
+    if (-not (X47-SnapshotIsActive)) { return }
     $already = X47-ReadJson 'journal-services.json'
     if ($already | Where-Object { $_.Name -eq $Name }) { return }
     $svc = Get-Service -Name $Name -ErrorAction SilentlyContinue
@@ -82,7 +91,7 @@ function X47-JournalService {
 
 function X47-JournalTask {
     param([string]$TaskPath, [string]$TaskName)
-    if (-not $script:X47SnapshotActive) { return }
+    if (-not (X47-SnapshotIsActive)) { return }
     $already = X47-ReadJson 'journal-tasks.json'
     if ($already | Where-Object { $_.TaskPath -eq $TaskPath -and $_.TaskName -eq $TaskName }) { return }
     try {
@@ -311,7 +320,7 @@ BitLocker is never turned off by rollback.
 "@ | Set-Content (Join-Path $dir 'README.txt') -Encoding UTF8
 
     Get-Date -Format o | Set-Content (Join-Path $dir 'created.txt') -Encoding UTF8
-    $script:X47SnapshotActive = $true
+    $global:X47SnapshotActive = $true
 
     if (-not $rp.Created) {
         X47-Log "Windows restore point was not created: $($rp.Detail)" 'WARN'

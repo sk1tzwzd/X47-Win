@@ -135,7 +135,7 @@ try {
 $revert = Join-Path $KitRoot 'logs\revert-anonymity.txt'
 @"
 Revert X47 anonymity (hosts + X47-Anon firewall):
-  powershell -ExecutionPolicy Bypass -File C:\X47\modules\08-anonymity.ps1 -Revert
+  powershell -ExecutionPolicy Bypass -File $(Join-Path $KitRoot "modules\08-anonymity.ps1") -Revert
 
 To allow Microsoft accounts again, set:
   HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\NoConnectedUser = 0

@@ -3,19 +3,26 @@ if (-not $script:X47Root) {
     $script:X47Root = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
     if (-not $script:X47Root) { $script:X47Root = 'C:\X47' }
 }
-$script:X47SnapshotActive = $false
+# X47SnapshotActive is deliberately NOT initialised here. Modules run in their own
+# script scope (& modules\NN-*.ps1) and re-dot-source this file, so a $script:-scoped
+# flag would be reset to $false and every X47-Journal* call would no-op — leaving
+# rollback with nothing to restore. The flag lives in $global: and stays unset until
+# something decides; see X47-SnapshotIsActive in X47Rollback.ps1.
 $rb = Join-Path $PSScriptRoot 'X47Rollback.ps1'
 if (Test-Path $rb) { . $rb }
 
+# Log dir/file are $global: for the same reason: one log per run, not one per module.
 function X47-EnsureLog {
-    if (-not $script:X47LogDir -or ($script:X47Root -and $script:X47LogDir -ne (Join-Path $script:X47Root 'logs'))) {
-        $script:X47LogDir = Join-Path $script:X47Root 'logs'
+    $desired = Join-Path $script:X47Root 'logs'
+    if ($global:X47LogDir -ne $desired) {
+        $global:X47LogDir = $desired
+        $global:X47LogFile = $null
     }
-    if (-not (Test-Path $script:X47LogDir)) {
-        New-Item -ItemType Directory -Path $script:X47LogDir -Force | Out-Null
+    if (-not (Test-Path $global:X47LogDir)) {
+        New-Item -ItemType Directory -Path $global:X47LogDir -Force | Out-Null
     }
-    if (-not $script:X47LogFile) {
-        $script:X47LogFile = Join-Path $script:X47LogDir ("x47-windows-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
+    if (-not $global:X47LogFile) {
+        $global:X47LogFile = Join-Path $global:X47LogDir ("x47-windows-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
     }
 }
 
@@ -23,7 +30,7 @@ function X47-Log {
     param([string]$Message, [string]$Level = 'INFO')
     X47-EnsureLog
     $line = "{0:yyyy-MM-dd HH:mm:ss} [{1}] {2}" -f (Get-Date), $Level, $Message
-    Add-Content -Path $script:X47LogFile -Value $line -Encoding UTF8
+    Add-Content -Path $global:X47LogFile -Value $line -Encoding UTF8
     switch ($Level) {
         'WARN' { Write-Host $line -ForegroundColor Yellow }
         'ERROR' { Write-Host $line -ForegroundColor Red }

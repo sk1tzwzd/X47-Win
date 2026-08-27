@@ -13,6 +13,9 @@ exit /b %ERRORLEVEL%
 
 :cli
 setlocal EnableDelayedExpansion
+REM SHIFT moves %0 as well, so capture our own path before the collect loop runs.
+set "SELF=%~f0"
+set "SELFDIR=%~dp0"
 set "ARGS="
 :collect
 shift
@@ -24,11 +27,11 @@ goto collect
 net session >nul 2>&1
 if %errorlevel% neq 0 (
   echo Requesting Administrator rights...
-  powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -ArgumentList '/cli !ARGS!' -Verb RunAs"
+  powershell -NoProfile -Command "Start-Process -FilePath '!SELF!' -ArgumentList '/cli !ARGS!' -Verb RunAs"
   exit /b
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Install-X47Windows.ps1" !ARGS!
+powershell -NoProfile -ExecutionPolicy Bypass -File "!SELFDIR!Install-X47Windows.ps1" !ARGS!
 if errorlevel 1 (
   echo.
   echo The kit reported an error. Scroll up or open logs\*.log

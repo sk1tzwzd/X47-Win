@@ -24,7 +24,7 @@ $go = Read-Host 'Type YES to continue'
 if ($go -ne 'YES') { exit 1 }
 
 if (-not (Test-Path (Join-Path $KitRoot 'rollback\created.txt'))) {
-    X47-BeginSnapshot -KitRoot $KitRoot
+    X47-BeginSnapshot -KitRoot $KitRoot | Out-Null
 }
 
 & (Join-Path $KitRoot 'modules\07-security.ps1') -KitRoot $KitRoot

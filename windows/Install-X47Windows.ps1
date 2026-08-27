@@ -33,7 +33,13 @@ if ($Quiet -and -not $Theme) { $Theme = 'x47' }
 
 $ErrorActionPreference = 'Stop'
 $KitRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $KitRoot 'lib\X47Common.ps1')
+$commonLib = Join-Path $KitRoot 'lib\X47Common.ps1'
+if (-not (Test-Path $commonLib)) {
+    Write-Host "X47-Win is incomplete: missing $commonLib" -ForegroundColor Red
+    Write-Host 'Restage the kit from Ubuntu (scripts/stage-x47-windows.sh).' -ForegroundColor Red
+    exit 1
+}
+. $commonLib
 $script:X47Root = $KitRoot
 
 X47-RequireAdmin
@@ -113,22 +119,28 @@ try {
 
     if (-not $SkipSnapshot) {
         if ($Quiet) {
-            X47-BeginSnapshot -KitRoot $KitRoot -AllowWithoutRestorePoint
+            X47-BeginSnapshot -KitRoot $KitRoot -AllowWithoutRestorePoint | Out-Null
         } else {
-            X47-BeginSnapshot -KitRoot $KitRoot
+            X47-BeginSnapshot -KitRoot $KitRoot | Out-Null
         }
     } else {
+        # Say "off" explicitly so a leftover rollback\created.txt from an earlier install
+        # cannot switch journalling back on and append to a stale journal.
+        $global:X47SnapshotActive = $false
         X47-Log 'snapshot skipped by flag' 'WARN'
     }
 
+    # 06-themes runs before 08-anonymity on purpose: Open-Shell and ExplorerPatcher are
+    # downloaded from GitHub, and 08 randomizes every physical NIC MAC, which drops Wi-Fi
+    # and forces re-association plus a new DHCP lease.
     $steps = @(
         @{ Flag = $SkipWallpaper;    Name = '01-wallpaper.ps1' }
         @{ Flag = $SkipDebloat;      Name = '02-debloat.ps1' }
         @{ Flag = $SkipPrivacy;      Name = '03-privacy.ps1' }
         @{ Flag = $SkipIdentifiers;  Name = '04-identifiers.ps1' }
+        @{ Flag = $SkipTheme;        Name = '06-themes.ps1' }
         @{ Flag = $SkipSecurity;     Name = '07-security.ps1' }
         @{ Flag = $SkipAnonymity;    Name = '08-anonymity.ps1' }
-        @{ Flag = $SkipTheme;        Name = '06-themes.ps1' }
         @{ Flag = (-not $runBitLocker); Name = '05-bitlocker.ps1' }
     )
 
@@ -157,7 +169,7 @@ try {
     Write-Host ''
     if ($failed.Count -gt 0) {
         X47-Log ("finished with failures: {0}" -f ($failed -join ', ')) 'WARN'
-        Write-Host "See $script:X47LogFile"
+        Write-Host "See $global:X47LogFile"
         exit 1
     }
 
@@ -180,8 +192,8 @@ try {
     Write-Host ''
 } catch {
     X47-Log "Fatal error during kit execution: $($_.Exception.Message)" 'ERROR'
-    if ($script:X47LogFile) {
-        Write-Host "Log written to: $script:X47LogFile" -ForegroundColor Red
+    if ($global:X47LogFile) {
+        Write-Host "Log written to: $global:X47LogFile" -ForegroundColor Red
     }
     exit 1
 }

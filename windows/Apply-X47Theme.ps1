@@ -48,4 +48,4 @@ X47-ApplyThemePreset -Name $Theme -KitRoot $KitRoot
 Write-Host ''
 Write-Host "Theme '$Theme' applied. Sign out / back in if the Start menu did not refresh." -ForegroundColor Green
 Write-Host 'This is Start + taskbar + wallpaper + accent — not a full Luna/Aero title-bar patch.'
-Write-Host 'Switch again anytime: C:\X47\Apply-X47Theme.bat'
+Write-Host "Switch again anytime: $KitRoot\Apply-X47Theme.bat"

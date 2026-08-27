@@ -50,7 +50,7 @@ After you boot Ubuntu, import it with:
     } else {
         X47-Log 'no USB volume found — plug one in and re-run:  .\\modules\\05-bitlocker.ps1 -SkipEncrypt' 'WARN'
         Write-Host ''
-        Write-Host 'COPY THIS KEY NOW (photo + paper). After encryption Linux cannot read C:\X47 without it.' -ForegroundColor Yellow
+        Write-Host 'COPY THIS KEY NOW (photo + paper). After encryption Linux cannot read this disk without it.' -ForegroundColor Yellow
         Write-Host $Password -ForegroundColor Cyan
         Write-Host ''
     }

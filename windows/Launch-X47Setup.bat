@@ -10,7 +10,13 @@ if not exist "%~dp0X47Setup.exe" (
 )
 
 if exist "%~dp0X47Setup.exe" (
-  if exist "%USERPROFILE%\Desktop\" copy /y "%~dp0X47Setup.exe" "%USERPROFILE%\Desktop\X47-Win Setup.exe" >nul 2>&1
+  REM Write a shim, not a copy of the .exe. A copied .exe resolves its kit root from
+  REM its own folder, so on the Desktop it only works if the kit happens to be C:\X47.
+  if exist "%USERPROFILE%\Desktop\" (
+    del /q "%USERPROFILE%\Desktop\X47-Win Setup.exe" >nul 2>&1
+    > "%USERPROFILE%\Desktop\X47-Win Setup.bat" echo @echo off
+    >>"%USERPROFILE%\Desktop\X47-Win Setup.bat" echo start "" "%~dp0X47Setup.exe"
+  )
   start "" "%~dp0X47Setup.exe"
   exit /b 0
 )

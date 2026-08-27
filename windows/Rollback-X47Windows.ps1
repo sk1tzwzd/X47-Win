@@ -1,7 +1,7 @@
 #requires -RunAsAdministrator
 <#
 .SYNOPSIS
-  Undo an X47-Win install using the snapshot in C:\X47\rollback.
+  Undo an X47-Win install using the snapshot in <KitRoot>\rollback.
   Does not delete user files. Does not turn BitLocker off.
 #>
 [CmdletBinding()]

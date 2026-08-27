@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.2
+
+- **Rollback actually rolls back** — the snapshot flag was `$script:`-scoped, so every module (run in its own scope via `& modules\NN-*.ps1`) reset it to `$false` and silently journalled nothing. `journal-reg.json`, `journal-services.json` and `journal-tasks.json` were never written, and `Rollback-X47Windows.bat` restored 0 registry values while still reporting success. The flag is now `$global:` with an on-disk fallback (`X47-SnapshotIsActive`), so standalone `Apply-X47Theme` / `Apply-X47Anonymity` runs journal into an existing snapshot too.
+- **One log per run** — log dir and file were also `$script:`-scoped, producing a separate timestamped log per module while the installer pointed you at just one of them. Both are `$global:` now.
+- **`Install-X47Windows.bat /cli` can self-elevate** — `SHIFT` moves `%0`, so `%~f0` no longer named the batch file by the time the UAC re-launch ran. Path is captured before the argument loop.
+- **Desktop entry point is a shim, not a copy** — a copied `X47Setup.exe` resolves its kit root from its own folder, so it only worked when the kit was literally `C:\X47`.
+- **Themes download before the network drops** — `06-themes` now runs before `08-anonymity`, which randomizes every physical NIC MAC and forces Wi-Fi re-association. Open-Shell / ExplorerPatcher were failing to download on the XP, Vista and Win10 looks.
+- **Staging** — refuses to write a hibernated volume, detects Windows profiles instead of hardcoding one, and drops a dead wallpaper source path left over from the monorepo split.
+
 ## 1.1.1
 
 - **Installer snapshot fallback** — fixed exit 1 error when System Restore point creation fails on Windows 11; installer now proceeds cleanly with registry and configuration rollback journaling without blocking.
