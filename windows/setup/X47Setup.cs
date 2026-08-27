@@ -57,6 +57,8 @@ namespace X47Setup
 
         int _page;
         bool _busy;
+        Process _proc;
+        string _kit;
 
         public SetupForm()
         {
@@ -391,6 +393,7 @@ namespace X47Setup
             if (!File.Exists(ps))
                 ps = "powershell.exe";
 
+            _kit = kit;
             _busy = true;
             _next.Enabled = false;
             _back.Enabled = false;
@@ -406,25 +409,43 @@ namespace X47Setup
             psi.UseShellExecute = false;
             psi.CreateNoWindow = false;
 
-            Process proc = new Process();
-            proc.StartInfo = psi;
+            GuiLog(kit, "launch: " + ps + " " + args);
+
+            _proc = new Process();
+            _proc.StartInfo = psi;
+            // Exited fires on the UI thread via SynchronizingObject; a blocking
+            // WaitForExit() here would freeze the form into "Not Responding".
+            _proc.EnableRaisingEvents = true;
+            _proc.SynchronizingObject = this;
+            _proc.Exited += delegate { OnInstallFinished(); };
             try
             {
-                proc.Start();
-                proc.WaitForExit();
+                _proc.Start();
             }
             catch (Exception ex)
             {
+                GuiLog(kit, "powershell failed to start: " + ex.Message);
+                _proc.Dispose();
+                _proc = null;
                 _busy = false;
                 ShowPage(3);
                 _next.Enabled = true;
                 MessageBox.Show(this, "Could not start PowerShell:\n" + ex.Message,
                     "X47-Win Setup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
+        }
+
+        void OnInstallFinished()
+        {
+            int code = 1;
+            try { code = _proc.ExitCode; } catch { }
+            _proc.Dispose();
+            _proc = null;
+            string kit = _kit;
+            GuiLog(kit, "installer exited with code " + code);
 
             _busy = false;
-            if (proc.ExitCode == 0)
+            if (code == 0)
             {
                 string rollbackBat = Path.Combine(kit, "Rollback-X47Windows.bat");
                 string themeBat = Path.Combine(kit, "Apply-X47Theme.bat");
@@ -445,29 +466,54 @@ namespace X47Setup
                 _cancel.Enabled = true;
                 string logDir = Path.Combine(kit, "logs");
                 MessageBox.Show(this,
-                    "The kit reported an error (exit " + proc.ExitCode + ").\n" +
-                    "Scroll the PowerShell window or open:\n" + logDir,
+                    "The kit reported an error (exit " + code + ").\n" +
+                    "The PowerShell window stays open with the error text.\n" +
+                    "Logs: " + logDir,
                     "X47-Win Setup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
+        static void GuiLog(string kit, string line)
+        {
+            try
+            {
+                string dir = Path.Combine(kit, "logs");
+                Directory.CreateDirectory(dir);
+                File.AppendAllText(Path.Combine(dir, "setup-gui.log"),
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  " + line + Environment.NewLine);
+            }
+            catch { }
+        }
+
         string BuildArgs(string script)
         {
+            StringBuilder f = new StringBuilder();
+            f.Append("& '");
+            f.Append(script.Replace("'", "''"));
+            f.Append("' -Quiet -Theme ");
+            f.Append(SelectedTheme());
+            if (!_snap.Checked) f.Append(" -SkipSnapshot");
+            if (!_wall.Checked) f.Append(" -SkipWallpaper");
+            if (!_debloat.Checked) f.Append(" -SkipDebloat");
+            if (!_privacy.Checked) f.Append(" -SkipPrivacy");
+            if (!_ids.Checked) f.Append(" -SkipIdentifiers");
+            if (!_security.Checked) f.Append(" -SkipSecurity");
+            if (!_anon.Checked) f.Append(" -SkipAnonymity");
+            if (!_themeOn.Checked) f.Append(" -SkipTheme");
+            if (_bitlocker.Checked) f.Append(" -EnableBitLocker");
+            if (_guid.Checked) f.Append(" -SpoofMachineGuid");
+
+            // -Command wrapper (not -File): on any failure the console stays open
+            // showing the error until the user presses Enter, instead of vanishing
+            // before it can be read. The installer exits 0 explicitly on success.
             StringBuilder a = new StringBuilder();
-            a.Append("-NoProfile -ExecutionPolicy Bypass -File \"");
-            a.Append(script);
-            a.Append("\" -Quiet -Theme ");
-            a.Append(SelectedTheme());
-            if (!_snap.Checked) a.Append(" -SkipSnapshot");
-            if (!_wall.Checked) a.Append(" -SkipWallpaper");
-            if (!_debloat.Checked) a.Append(" -SkipDebloat");
-            if (!_privacy.Checked) a.Append(" -SkipPrivacy");
-            if (!_ids.Checked) a.Append(" -SkipIdentifiers");
-            if (!_security.Checked) a.Append(" -SkipSecurity");
-            if (!_anon.Checked) a.Append(" -SkipAnonymity");
-            if (!_themeOn.Checked) a.Append(" -SkipTheme");
-            if (_bitlocker.Checked) a.Append(" -EnableBitLocker");
-            if (_guid.Checked) a.Append(" -SpoofMachineGuid");
+            a.Append("-NoProfile -ExecutionPolicy Bypass -Command \"");
+            a.Append("$c=1; try { ");
+            a.Append(f);
+            a.Append("; $c=$LASTEXITCODE } catch { Write-Host $_ -ForegroundColor Red; $c=1 }; ");
+            a.Append("if ($c -ne 0) { Write-Host ''; ");
+            a.Append("Read-Host 'X47-Win reported an error - press Enter to close this window' | Out-Null }; ");
+            a.Append("exit $c\"");
             return a.ToString();
         }
 

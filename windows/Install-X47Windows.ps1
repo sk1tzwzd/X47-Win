@@ -190,6 +190,9 @@ try {
     Write-Host "  • Change the look later: $KitRoot\Apply-X47Theme.bat"
     Write-Host "  • Anonymity only / revert: $KitRoot\Apply-X47Anonymity.bat"
     Write-Host ''
+    # Explicit: modules shell out to netsh/w32tm etc., so $LASTEXITCODE could
+    # otherwise carry a stray nonzero into the setup GUI's success check.
+    exit 0
 } catch {
     X47-Log "Fatal error during kit execution: $($_.Exception.Message)" 'ERROR'
     if ($global:X47LogFile) {

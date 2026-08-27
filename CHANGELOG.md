@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.3
+
+- **Errors stay on screen** — the setup GUI launched the installer with `powershell -File`, so any failure before logging started closed the console instantly, leaving only "exit 1" and an empty `logs\` folder. It now runs through a `-Command` wrapper that keeps the window open (press Enter to close) and the installer exits 0 explicitly on success so stray `netsh`/`w32tm` exit codes cannot fake a failure.
+- **Wizard no longer freezes** — the GUI waited on the installer with a blocking `WaitForExit()` on the UI thread, so Windows flagged it "Not Responding" for the whole install. The wait is asynchronous now.
+- **GUI launch log** — `logs\setup-gui.log` records the exact PowerShell command and exit code, so there is always evidence even when the installer dies before its own log starts.
+- **CRLF batch files** — all `.bat` files are CRLF and pinned that way in `.gitattributes`; `cmd.exe` mishandles `goto` labels in LF-only batch files staged from Linux.
+
 ## 1.1.2
 
 - **Rollback actually rolls back** — the snapshot flag was `$script:`-scoped, so every module (run in its own scope via `& modules\NN-*.ps1`) reset it to `$false` and silently journalled nothing. `journal-reg.json`, `journal-services.json` and `journal-tasks.json` were never written, and `Rollback-X47Windows.bat` restored 0 registry values while still reporting success. The flag is now `$global:` with an on-disk fallback (`X47-SnapshotIsActive`), so standalone `Apply-X47Theme` / `Apply-X47Anonymity` runs journal into an existing snapshot too.
