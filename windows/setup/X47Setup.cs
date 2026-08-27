@@ -131,11 +131,11 @@ namespace X47Setup
                 28, 56, 680, 48));
 
             p.Controls.Add(CardText(28, 118, 684, 250,
-                "Snapshot first — Windows restore point plus C:\\X47\\rollback, so you can undo.\n\n" +
+                "Snapshot first — Windows restore point plus rollback snapshot, so you can undo.\n\n" +
                 "Does not format the disk or delete Documents, Pictures, or Desktop.\n\n" +
                 "BitLocker stays off unless you opt in. VeraCrypt is also fine — install it yourself from veracrypt.fr. Do not stack both on the same volume.\n\n" +
                 "Store, OneDrive, Xbox, and Microsoft sign-in will likely break if you keep anonymity on. Defender and Windows Update stay on.\n\n" +
-                "Undo later: C:\\X47\\Rollback-X47Windows.bat"));
+                "Undo later with Rollback-X47Windows.bat"));
             return p;
         }
 
@@ -181,7 +181,7 @@ namespace X47Setup
             p.Controls.Add(Title("What to install", 28, 10, 680, 24, 13f, true));
             p.Controls.Add(Body("Defaults match a full privacy pass. Uncheck anything you do not want.", 28, 36, 680, 22));
 
-            _snap = Tick("Snapshot first (restore point + C:\\X47\\rollback)", 36, 68, true);
+            _snap = Tick("Snapshot first (restore point + rollback journal)", 36, 68, true);
             _wall = Tick("Set wallpaper for the selected look", 36, 98, true);
             _debloat = Tick("Debloat — Xbox, Widgets, Copilot, consumer junk", 36, 128, true);
             _privacy = Tick("Privacy — telemetry Required, ads and location off", 36, 158, true);
@@ -344,7 +344,7 @@ namespace X47Setup
                     "It replaces HKLM\\SOFTWARE\\Microsoft\\Cryptography\\MachineGuid.\n" +
                     "Activation WILL break. BitLocker and Windows Update can break.\n" +
                     "The board UUID and TPM are NOT changed. The PC is still identifiable.\n" +
-                    "Rollback can put the old GUID back if C:\\X47\\rollback still exists.\n\n" +
+                    "Rollback can put the old GUID back if rollback snapshot still exists.\n\n" +
                     "Continue with MachineGuid spoof?",
                     "X47-Win — MachineGuid warning",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -426,11 +426,13 @@ namespace X47Setup
             _busy = false;
             if (proc.ExitCode == 0)
             {
+                string rollbackBat = Path.Combine(kit, "Rollback-X47Windows.bat");
+                string themeBat = Path.Combine(kit, "Apply-X47Theme.bat");
                 MessageBox.Show(this,
                     "X47-Win finished.\n\n" +
                     "Encrypt the disk when you can (BitLocker or VeraCrypt) if you did not already.\n" +
-                    "Undo: C:\\X47\\Rollback-X47Windows.bat\n" +
-                    "Change the look later: C:\\X47\\Apply-X47Theme.bat",
+                    "Undo: " + rollbackBat + "\n" +
+                    "Change the look later: " + themeBat,
                     "X47-Win Setup", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Close();
             }
@@ -441,9 +443,10 @@ namespace X47Setup
                 _next.Text = "Install";
                 _back.Enabled = true;
                 _cancel.Enabled = true;
+                string logDir = Path.Combine(kit, "logs");
                 MessageBox.Show(this,
                     "The kit reported an error (exit " + proc.ExitCode + ").\n" +
-                    "Scroll the PowerShell window or open C:\\X47\\logs.",
+                    "Scroll the PowerShell window or open:\n" + logDir,
                     "X47-Win Setup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }

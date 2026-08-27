@@ -39,135 +39,149 @@ $script:X47Root = $KitRoot
 X47-RequireAdmin
 X47-EnsureLog
 X47-Log "kit root = $KitRoot"
-X47-Log ("user={0} host={1} edition={2}" -f $env:USERNAME, $env:COMPUTERNAME, (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion').ProductName)
+$edition = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction SilentlyContinue).ProductName
+if (-not $edition) { $edition = 'Windows' }
+X47-Log ("user={0} host={1} edition={2}" -f $env:USERNAME, $env:COMPUTERNAME, $edition)
 
-Write-Host ''
-Write-Host '========================================' -ForegroundColor Cyan
-Write-Host ' X47-Win — privacy kit' -ForegroundColor Cyan
-Write-Host '========================================' -ForegroundColor Cyan
-Write-Host 'This will:'
-Write-Host '  0. Snapshot first (restore point + C:\X47\rollback) so you can undo'
-Write-Host '  1. Set wallpaper (X47, or XP / Vista / Win10 / Win11 look)'
-Write-Host '  2. Remove Xbox / widgets / Copilot / consumer junk'
-Write-Host '  3. Harden privacy (telemetry Required, ads/location off)'
-Write-Host '  4. Rotate advertising + SQM IDs (MachineGuid left alone)'
-if (-not $SkipSecurity) {
-    Write-Host '  5. Harden security (inbound firewall, RDP off, Defender stays)'
-}
-if (-not $SkipAnonymity) {
-    Write-Host '  6. Max-offline anonymity (block MSA / Store / OneDrive / telemetry hosts)'
-}
-if (-not $SkipTheme) {
-    Write-Host '  7. Apply a look (XP, remastered XP, Vista, Win10, Win11, or X47)'
-}
-if ($runBitLocker) {
-    Write-Host '  8. Turn on BitLocker with a pre-boot PIN (full volume) — you opted in'
-} else {
-    Write-Host '  8. Skip disk encryption (default)'
-}
-if ($SpoofMachineGuid) {
-    Write-Host '  9. OPTIONAL MachineGuid spoof — breaks activation; does not hide hardware'
-}
-Write-Host ''
-Write-Host 'Disk encryption is advised, not required. This kit does not turn it on'
-Write-Host 'unless you pass -EnableBitLocker. VeraCrypt is also fine — install it'
-Write-Host 'yourself from https://www.veracrypt.fr/  Do not stack BitLocker and'
-Write-Host 'VeraCrypt on the same volume. See C:\X47\docs\x47-windows-guide.html'
-Write-Host ''
-if ($runBitLocker) {
-    Write-Host 'Stay on AC power. Have a USB stick ready for the BitLocker recovery key.'
-    Write-Host 'The PIN only unlocks Windows. Ubuntu LUKS stays separate.'
-}
-Write-Host 'Does not format the disk or delete Documents / Pictures / Desktop.'
-Write-Host 'Undo later: C:\X47\Rollback-X47Windows.bat'
-Write-Host 'Store / OneDrive / Xbox / Microsoft sign-in will likely break. Update stays.'
-Write-Host ''
-if (-not $Quiet) {
-    $go = Read-Host 'Type YES to continue'
-    if ($go -ne 'YES') {
-        X47-Log 'aborted by user'
+try {
+    Write-Host ''
+    Write-Host '========================================' -ForegroundColor Cyan
+    Write-Host ' X47-Win — privacy kit' -ForegroundColor Cyan
+    Write-Host '========================================' -ForegroundColor Cyan
+    Write-Host 'This will:'
+    Write-Host "  0. Snapshot first (restore point + $KitRoot\rollback) so you can undo"
+    Write-Host '  1. Set wallpaper (X47, or XP / Vista / Win10 / Win11 look)'
+    Write-Host '  2. Remove Xbox / widgets / Copilot / consumer junk'
+    Write-Host '  3. Harden privacy (telemetry Required, ads/location off)'
+    Write-Host '  4. Rotate advertising + SQM IDs (MachineGuid left alone)'
+    if (-not $SkipSecurity) {
+        Write-Host '  5. Harden security (inbound firewall, RDP off, Defender stays)'
+    }
+    if (-not $SkipAnonymity) {
+        Write-Host '  6. Max-offline anonymity (block MSA / Store / OneDrive / telemetry hosts)'
+    }
+    if (-not $SkipTheme) {
+        Write-Host '  7. Apply a look (XP, remastered XP, Vista, Win10, Win11, or X47)'
+    }
+    if ($runBitLocker) {
+        Write-Host '  8. Turn on BitLocker with a pre-boot PIN (full volume) — you opted in'
+    } else {
+        Write-Host '  8. Skip disk encryption (default)'
+    }
+    if ($SpoofMachineGuid) {
+        Write-Host '  9. OPTIONAL MachineGuid spoof — breaks activation; does not hide hardware'
+    }
+    Write-Host ''
+    Write-Host 'Disk encryption is advised, not required. This kit does not turn it on'
+    Write-Host 'unless you pass -EnableBitLocker. VeraCrypt is also fine — install it'
+    Write-Host 'yourself from https://www.veracrypt.fr/  Do not stack BitLocker and'
+    Write-Host "VeraCrypt on the same volume. See $KitRoot\docs\x47-windows-guide.html"
+    Write-Host ''
+    if ($runBitLocker) {
+        Write-Host 'Stay on AC power. Have a USB stick ready for the BitLocker recovery key.'
+        Write-Host 'The PIN only unlocks Windows. Ubuntu LUKS stays separate.'
+    }
+    Write-Host 'Does not format the disk or delete Documents / Pictures / Desktop.'
+    Write-Host "Undo later: $KitRoot\Rollback-X47Windows.bat"
+    Write-Host 'Store / OneDrive / Xbox / Microsoft sign-in will likely break. Update stays.'
+    Write-Host ''
+    if (-not $Quiet) {
+        $go = Read-Host 'Type YES to continue'
+        if ($go -ne 'YES') {
+            X47-Log 'aborted by user'
+            exit 1
+        }
+    } else {
+        X47-Log 'confirmed by setup GUI (-Quiet)'
+    }
+
+    if ($SpoofMachineGuid -and -not $Quiet) {
+        Write-Host ''
+        Write-Host 'MachineGuid spoof is optional and ON for this run.' -ForegroundColor Yellow
+        Write-Host 'It replaces HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid.' -ForegroundColor Yellow
+        Write-Host 'Activation WILL break. BitLocker/Update can break.' -ForegroundColor Yellow
+        Write-Host 'Board UUID and TPM are NOT changed. The PC is still identifiable.' -ForegroundColor Yellow
+        Write-Host "Rollback can put the old GUID back if you still have $KitRoot\rollback." -ForegroundColor Yellow
+        $guidGo = Read-Host 'Type SPOOF to change MachineGuid, or press Enter to skip'
+        if ($guidGo -ne 'SPOOF') {
+            $SpoofMachineGuid = $false
+            X47-Log 'MachineGuid spoof skipped after warning'
+        }
+    } elseif ($SpoofMachineGuid) {
+        X47-Log 'MachineGuid spoof confirmed by setup GUI'
+    }
+
+    if (-not $SkipSnapshot) {
+        if ($Quiet) {
+            X47-BeginSnapshot -KitRoot $KitRoot -AllowWithoutRestorePoint
+        } else {
+            X47-BeginSnapshot -KitRoot $KitRoot
+        }
+    } else {
+        X47-Log 'snapshot skipped by flag' 'WARN'
+    }
+
+    $steps = @(
+        @{ Flag = $SkipWallpaper;    Name = '01-wallpaper.ps1' }
+        @{ Flag = $SkipDebloat;      Name = '02-debloat.ps1' }
+        @{ Flag = $SkipPrivacy;      Name = '03-privacy.ps1' }
+        @{ Flag = $SkipIdentifiers;  Name = '04-identifiers.ps1' }
+        @{ Flag = $SkipSecurity;     Name = '07-security.ps1' }
+        @{ Flag = $SkipAnonymity;    Name = '08-anonymity.ps1' }
+        @{ Flag = $SkipTheme;        Name = '06-themes.ps1' }
+        @{ Flag = (-not $runBitLocker); Name = '05-bitlocker.ps1' }
+    )
+
+    $failed = @()
+    foreach ($step in $steps) {
+        if ($step.Flag) {
+            X47-Log "skip $($step.Name)"
+            continue
+        }
+        $path = Join-Path $KitRoot "modules\$($step.Name)"
+        X47-Log "running $path"
+        try {
+            if ($step.Name -eq '06-themes.ps1' -and $Theme) {
+                & $path -KitRoot $KitRoot -Theme $Theme
+            } elseif ($step.Name -eq '04-identifiers.ps1' -and $SpoofMachineGuid) {
+                & $path -KitRoot $KitRoot -SpoofMachineGuid
+            } else {
+                & $path -KitRoot $KitRoot
+            }
+        } catch {
+            X47-Log "$($step.Name) failed: $($_.Exception.Message)" 'ERROR'
+            $failed += $step.Name
+        }
+    }
+
+    Write-Host ''
+    if ($failed.Count -gt 0) {
+        X47-Log ("finished with failures: {0}" -f ($failed -join ', ')) 'WARN'
+        Write-Host "See $script:X47LogFile"
         exit 1
     }
-} else {
-    X47-Log 'confirmed by setup GUI (-Quiet)'
-}
 
-if ($SpoofMachineGuid -and -not $Quiet) {
+    X47-Log 'X47 Windows kit finished' 'OK'
     Write-Host ''
-    Write-Host 'MachineGuid spoof is optional and ON for this run.' -ForegroundColor Yellow
-    Write-Host 'It replaces HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid.' -ForegroundColor Yellow
-    Write-Host 'Activation WILL break. BitLocker/Update can break.' -ForegroundColor Yellow
-    Write-Host 'Board UUID and TPM are NOT changed. The PC is still identifiable.' -ForegroundColor Yellow
-    Write-Host 'Rollback can put the old GUID back if you still have C:\X47\rollback.' -ForegroundColor Yellow
-    $guidGo = Read-Host 'Type SPOOF to change MachineGuid, or press Enter to skip'
-    if ($guidGo -ne 'SPOOF') {
-        $SpoofMachineGuid = $false
-        X47-Log 'MachineGuid spoof skipped after warning'
+    Write-Host 'Next:' -ForegroundColor Green
+    Write-Host '  • Encrypt the disk when you can: BitLocker (Pro) or VeraCrypt (Home/Pro).'
+    if ($runBitLocker) {
+        Write-Host '  • Wait for manage-bde -status C: = 100%. Photograph the USB recovery key.'
+        Write-Host '  • On Ubuntu: x47-windows-import-key /path/to/X47-BitLocker-Recovery-*.txt'
+    } else {
+        Write-Host "  • BitLocker later: $KitRoot\Install-X47Windows.ps1 -EnableBitLocker"
+        Write-Host '  • VeraCrypt: download from veracrypt.fr — do not stack it on BitLocker.'
     }
-} elseif ($SpoofMachineGuid) {
-    X47-Log 'MachineGuid spoof confirmed by setup GUI'
-}
-
-if (-not $SkipSnapshot) {
-    X47-BeginSnapshot -KitRoot $KitRoot
-} else {
-    X47-Log 'snapshot skipped by flag' 'WARN'
-}
-
-$steps = @(
-    @{ Flag = $SkipWallpaper;    Name = '01-wallpaper.ps1' }
-    @{ Flag = $SkipDebloat;      Name = '02-debloat.ps1' }
-    @{ Flag = $SkipPrivacy;      Name = '03-privacy.ps1' }
-    @{ Flag = $SkipIdentifiers;  Name = '04-identifiers.ps1' }
-    @{ Flag = $SkipSecurity;     Name = '07-security.ps1' }
-    @{ Flag = $SkipAnonymity;    Name = '08-anonymity.ps1' }
-    @{ Flag = $SkipTheme;        Name = '06-themes.ps1' }
-    @{ Flag = (-not $runBitLocker); Name = '05-bitlocker.ps1' }
-)
-
-$failed = @()
-foreach ($step in $steps) {
-    if ($step.Flag) {
-        X47-Log "skip $($step.Name)"
-        continue
+    Write-Host '  • Shut down fully (not Fast Startup). Dual-boot from GRUB as usual.'
+    Write-Host "  • Guide: $KitRoot\docs\x47-windows-guide.html"
+    Write-Host "  • Undo everything the kit did: $KitRoot\Rollback-X47Windows.bat"
+    Write-Host "  • Change the look later: $KitRoot\Apply-X47Theme.bat"
+    Write-Host "  • Anonymity only / revert: $KitRoot\Apply-X47Anonymity.bat"
+    Write-Host ''
+} catch {
+    X47-Log "Fatal error during kit execution: $($_.Exception.Message)" 'ERROR'
+    if ($script:X47LogFile) {
+        Write-Host "Log written to: $script:X47LogFile" -ForegroundColor Red
     }
-    $path = Join-Path $KitRoot "modules\$($step.Name)"
-    X47-Log "running $path"
-    try {
-        if ($step.Name -eq '06-themes.ps1' -and $Theme) {
-            & $path -KitRoot $KitRoot -Theme $Theme
-        } elseif ($step.Name -eq '04-identifiers.ps1' -and $SpoofMachineGuid) {
-            & $path -KitRoot $KitRoot -SpoofMachineGuid
-        } else {
-            & $path -KitRoot $KitRoot
-        }
-    } catch {
-        X47-Log "$($step.Name) failed: $($_.Exception.Message)" 'ERROR'
-        $failed += $step.Name
-    }
-}
-
-Write-Host ''
-if ($failed.Count -gt 0) {
-    X47-Log ("finished with failures: {0}" -f ($failed -join ', ')) 'WARN'
-    Write-Host "See $script:X47LogFile"
     exit 1
 }
-
-X47-Log 'X47 Windows kit finished' 'OK'
-Write-Host ''
-Write-Host 'Next:' -ForegroundColor Green
-Write-Host '  • Encrypt the disk when you can: BitLocker (Pro) or VeraCrypt (Home/Pro).'
-if ($runBitLocker) {
-    Write-Host '  • Wait for manage-bde -status C: = 100%. Photograph the USB recovery key.'
-    Write-Host '  • On Ubuntu: x47-windows-import-key /path/to/X47-BitLocker-Recovery-*.txt'
-} else {
-    Write-Host '  • BitLocker later: C:\X47\Install-X47Windows.ps1 -EnableBitLocker'
-    Write-Host '  • VeraCrypt: download from veracrypt.fr — do not stack it on BitLocker.'
-}
-Write-Host '  • Shut down fully (not Fast Startup). Dual-boot from GRUB as usual.'
-Write-Host "  • Guide: $KitRoot\docs\x47-windows-guide.html"
-Write-Host '  • Undo everything the kit did: C:\X47\Rollback-X47Windows.bat'
-Write-Host '  • Change the look later: C:\X47\Apply-X47Theme.bat'
-Write-Host '  • Anonymity only / revert: C:\X47\Apply-X47Anonymity.bat'
-Write-Host ''

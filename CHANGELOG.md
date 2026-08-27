@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- **Installer snapshot fallback** — fixed exit 1 error when System Restore point creation fails on Windows 11; installer now proceeds cleanly with registry and configuration rollback journaling without blocking.
+- **Log pathing fix** — dynamic log resolution to `<KitRoot>\logs\` across all setup GUIs and scripts so logs are always created and reported accurately.
+
 ## 1.1.0
 
 - **Setup GUI** — `X47Setup.exe` wizard (Welcome → default look → feature checkboxes → Install). First run compiles it with Windows `csc.exe`. BitLocker and MachineGuid stay off until you check them. `-Quiet` skips the console YES/SPOOF prompts when the GUI already confirmed.

@@ -64,7 +64,7 @@ for ($i = 0; $i -lt 4; $i++) {
 $pages[0].Controls.Add((New-Label 'Install a privacy kit on this Windows 11 PC' 28 18 680 28 $Ink $true 13))
 $pages[0].Controls.Add((New-Label 'The setup GUI picks a default look and which features to apply. Nothing is written until you click Install on the last page.' 28 56 680 48 $Muted))
 $welcomeCard = New-Label @"
-Snapshot first — Windows restore point plus C:\X47\rollback, so you can undo.
+Snapshot first — Windows restore point plus rollback snapshot, so you can undo.
 
 Does not format the disk or delete Documents, Pictures, or Desktop.
 
@@ -72,7 +72,7 @@ BitLocker stays off unless you opt in. VeraCrypt is also fine — install it you
 
 Store, OneDrive, Xbox, and Microsoft sign-in will likely break if you keep anonymity on. Defender and Windows Update stay on.
 
-Undo later: C:\X47\Rollback-X47Windows.bat
+Undo later with Rollback-X47Windows.bat
 "@ 28 118 684 250 $Ink
 $welcomeCard.BackColor = $Card
 $welcomeCard.Padding = New-Object System.Windows.Forms.Padding(14, 12, 14, 12)
@@ -132,7 +132,7 @@ function New-Tick([string]$text, $x, $y, [bool]$on, $color = $null) {
     return $c
 }
 
-$snap = New-Tick 'Snapshot first (restore point + C:\X47\rollback)' 36 68 $true
+$snap = New-Tick 'Snapshot first (restore point + rollback journal)' 36 68 $true
 $wall = New-Tick 'Set wallpaper for the selected look' 36 98 $true
 $debloat = New-Tick 'Debloat — Xbox, Widgets, Copilot, consumer junk' 36 128 $true
 $privacy = New-Tick 'Privacy — telemetry Required, ads and location off' 36 158 $true
@@ -247,7 +247,7 @@ $btnNext.Add_Click({
     if ($guid.Checked) {
         $r = [System.Windows.Forms.MessageBox]::Show(
             $form,
-            "MachineGuid spoof is optional and you turned it ON.`r`n`r`nIt replaces HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid.`r`nActivation WILL break. BitLocker and Windows Update can break.`r`nThe board UUID and TPM are NOT changed. The PC is still identifiable.`r`nRollback can put the old GUID back if C:\X47\rollback still exists.`r`n`r`nContinue with MachineGuid spoof?",
+            "MachineGuid spoof is optional and you turned it ON.`r`n`r`nIt replaces HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid.`r`nActivation WILL break. BitLocker and Windows Update can break.`r`nThe board UUID and TPM are NOT changed. The PC is still identifiable.`r`nRollback can put the old GUID back if rollback snapshot still exists.`r`n`r`nContinue with MachineGuid spoof?",
             'X47-Win — MachineGuid warning',
             'YesNo', 'Warning')
         if ($r -ne 'Yes') { $guid.Checked = $false; Update-Review; return }
@@ -285,14 +285,17 @@ $btnNext.Add_Click({
 
     $p = Start-Process -FilePath (Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe') -ArgumentList $argList -WorkingDirectory $KitRoot -Wait -PassThru
     if ($p.ExitCode -eq 0) {
-        [System.Windows.Forms.MessageBox]::Show($form, "X47-Win finished.`r`n`r`nEncrypt the disk when you can (BitLocker or VeraCrypt) if you did not already.`r`nUndo: C:\X47\Rollback-X47Windows.bat`r`nChange the look later: C:\X47\Apply-X47Theme.bat", 'X47-Win Setup', 'OK', 'Information') | Out-Null
+        $rollbackBat = Join-Path $KitRoot 'Rollback-X47Windows.bat'
+        $themeBat = Join-Path $KitRoot 'Apply-X47Theme.bat'
+        [System.Windows.Forms.MessageBox]::Show($form, "X47-Win finished.`r`n`r`nEncrypt the disk when you can (BitLocker or VeraCrypt) if you did not already.`r`nUndo: $rollbackBat`r`nChange the look later: $themeBat", 'X47-Win Setup', 'OK', 'Information') | Out-Null
         $form.Close()
     } else {
         $btnNext.Enabled = $true
         $btnBack.Enabled = $true
         $btnCancel.Enabled = $true
         $btnNext.Text = 'Install'
-        [System.Windows.Forms.MessageBox]::Show($form, "The kit reported an error (exit $($p.ExitCode)).`r`nScroll the PowerShell window or open C:\X47\logs.", 'X47-Win Setup', 'OK', 'Warning') | Out-Null
+        $logDir = Join-Path $KitRoot 'logs'
+        [System.Windows.Forms.MessageBox]::Show($form, "The kit reported an error (exit $($p.ExitCode)).`r`nScroll the PowerShell window or open:`r`n$logDir", 'X47-Win Setup', 'OK', 'Warning') | Out-Null
     }
 })
 

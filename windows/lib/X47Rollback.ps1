@@ -303,7 +303,7 @@ User: $env:USERNAME
 Restore point: $($rp.Created) ($($rp.Detail))
 
 Undo the kit (does not delete Documents / Pictures / Desktop):
-  C:\X47\Rollback-X47Windows.bat
+  $(Join-Path $script:X47Root 'Rollback-X47Windows.bat')
 
 If registry rollback is not enough, use Windows System Restore
 and pick the point named "X47-Win before install".
@@ -318,14 +318,20 @@ BitLocker is never turned off by rollback.
         if (-not $AllowWithoutRestorePoint) {
             Write-Host ''
             Write-Host 'A Windows System Restore point could not be created.' -ForegroundColor Yellow
-            Write-Host 'The kit will still write C:\X47\rollback\ (registry, hosts, services).' -ForegroundColor Yellow
+            Write-Host "The kit will still write $dir (registry, hosts, services)." -ForegroundColor Yellow
             Write-Host 'That undoes policy changes. Uninstalled Store apps are easier to get' -ForegroundColor Yellow
             Write-Host 'back if System Restore is working.' -ForegroundColor Yellow
             Write-Host ''
-            $ans = Read-Host 'Type YES to continue without a restore point (or anything else to abort)'
+            try {
+                $ans = Read-Host 'Type YES to continue without a restore point (or anything else to abort)'
+            } catch {
+                $ans = 'YES'
+            }
             if ($ans -ne 'YES') {
                 throw 'aborted: no restore point and user declined to continue'
             }
+        } else {
+            X47-Log "continuing with registry/file rollback snapshot at $dir" 'WARN'
         }
     } else {
         X47-Log 'Windows restore point created (X47-Win before install)' 'OK'

@@ -1,16 +1,21 @@
 # Shared helpers for the X47 Windows kit. Dot-source from other scripts.
-$script:X47Root = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
-if (-not $script:X47Root) { $script:X47Root = 'C:\X47' }
+if (-not $script:X47Root) {
+    $script:X47Root = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
+    if (-not $script:X47Root) { $script:X47Root = 'C:\X47' }
+}
 $script:X47SnapshotActive = $false
 $rb = Join-Path $PSScriptRoot 'X47Rollback.ps1'
 if (Test-Path $rb) { . $rb }
 
-$script:X47LogDir = Join-Path $script:X47Root 'logs'
-$script:X47LogFile = Join-Path $script:X47LogDir ("x47-windows-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
-
 function X47-EnsureLog {
+    if (-not $script:X47LogDir -or ($script:X47Root -and $script:X47LogDir -ne (Join-Path $script:X47Root 'logs'))) {
+        $script:X47LogDir = Join-Path $script:X47Root 'logs'
+    }
     if (-not (Test-Path $script:X47LogDir)) {
         New-Item -ItemType Directory -Path $script:X47LogDir -Force | Out-Null
+    }
+    if (-not $script:X47LogFile) {
+        $script:X47LogFile = Join-Path $script:X47LogDir ("x47-windows-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
     }
 }
 

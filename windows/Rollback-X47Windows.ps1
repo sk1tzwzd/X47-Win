@@ -20,7 +20,7 @@ Write-Host '========================================' -ForegroundColor Cyan
 Write-Host ' X47-Win — rollback' -ForegroundColor Cyan
 Write-Host '========================================' -ForegroundColor Cyan
 Write-Host 'This restores registry, hosts, services, firewall, wallpaper,'
-Write-Host 'and NTP from C:\X47\rollback. Documents are not deleted.'
+Write-Host "and NTP from $KitRoot\rollback. Documents are not deleted."
 Write-Host 'Store apps may need Microsoft Store or System Restore.'
 Write-Host 'BitLocker is left alone.'
 Write-Host ''
