@@ -1,4 +1,4 @@
-# Max-offline anonymity: block MSA/cloud/telemetry hosts, randomize physical NIC MACs, move NTP.
+﻿# Max-offline anonymity: block MSA/cloud/telemetry hosts, randomize physical NIC MACs, move NTP.
 # Does not wipe MachineGuid / SMBIOS / TPM. Does not hide your IP (use Mullvad on Windows for that).
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' }),

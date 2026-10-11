@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
   X47-Win setup GUI (WinForms). Used if X47Setup.exe is not built yet.
   Same options as windows/setup/X47Setup.cs

@@ -1,4 +1,4 @@
-# Reset advertising / telemetry IDs. MachineGuid stays unless -SpoofMachineGuid.
+﻿# Reset advertising / telemetry IDs. MachineGuid stays unless -SpoofMachineGuid.
 # SMBIOS UUID and TPM are never changed.
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' }),

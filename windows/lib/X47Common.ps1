@@ -1,4 +1,4 @@
-# Shared helpers for the X47 Windows kit. Dot-source from other scripts.
+﻿# Shared helpers for the X47 Windows kit. Dot-source from other scripts.
 if (-not $script:X47Root) {
     $script:X47Root = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
     if (-not $script:X47Root) { $script:X47Root = 'C:\X47' }
@@ -57,10 +57,14 @@ function X47-SetReg {
     if (Get-Command X47-JournalReg -ErrorAction SilentlyContinue) {
         X47-JournalReg -Path $Path -Name $Name -Action 'set'
     }
-    if (-not (Test-Path $Path)) {
-        New-Item -Path $Path -Force | Out-Null
+    try {
+        if (-not (Test-Path -LiteralPath $Path)) {
+            New-Item -Path $Path -Force -ErrorAction Stop | Out-Null
+        }
+        New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force -ErrorAction Stop | Out-Null
+    } catch {
+        X47-Log ("could not set {0} {1}: {2}" -f $Path, $Name, $_.Exception.Message) 'WARN'
     }
-    New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force | Out-Null
 }
 
 function X47-RemoveReg {

@@ -1,4 +1,4 @@
-# Apply the X47 circuit wallpaper (desktop + lock screen).
+﻿# Apply the X47 circuit wallpaper (desktop + lock screen).
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' })
 )

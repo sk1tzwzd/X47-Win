@@ -1,4 +1,4 @@
-# Theme helpers — Open-Shell + ExplorerPatcher + original wallpapers.
+﻿# Theme helpers — Open-Shell + ExplorerPatcher + original wallpapers.
 # Skins shipped with Open-Shell (GPL). No Microsoft Luna/Aero files.
 
 function X47-SetWallpaperFile {

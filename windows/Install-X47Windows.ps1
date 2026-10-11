@@ -1,4 +1,4 @@
-#requires -RunAsAdministrator
+﻿#requires -RunAsAdministrator
 <#
 .SYNOPSIS
   X47 Windows 11 privacy kit — wallpaper, debloat, privacy, IDs, security.
@@ -169,7 +169,9 @@ try {
     Write-Host ''
     if ($failed.Count -gt 0) {
         X47-Log ("finished with failures: {0}" -f ($failed -join ', ')) 'WARN'
-        Write-Host "See $global:X47LogFile"
+        Write-Host "See $global:X47LogFile" -ForegroundColor Red
+        Write-Host 'Press Enter to close this window.' -ForegroundColor Red
+        Read-Host | Out-Null
         exit 1
     }
 
@@ -195,8 +197,11 @@ try {
     exit 0
 } catch {
     X47-Log "Fatal error during kit execution: $($_.Exception.Message)" 'ERROR'
+    Write-Host $_.ScriptStackTrace -ForegroundColor Red
     if ($global:X47LogFile) {
         Write-Host "Log written to: $global:X47LogFile" -ForegroundColor Red
     }
+    Write-Host 'Press Enter to close this window.' -ForegroundColor Red
+    Read-Host | Out-Null
     exit 1
 }

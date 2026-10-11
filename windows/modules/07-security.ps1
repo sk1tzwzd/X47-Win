@@ -1,4 +1,4 @@
-# Security hardening. Defender and SmartScreen stay on. Outbound stays allow (Update).
+﻿# Security hardening. Defender and SmartScreen stay on. Outbound stays allow (Update).
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' })
 )

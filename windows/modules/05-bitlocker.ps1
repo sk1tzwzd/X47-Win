@@ -1,4 +1,4 @@
-# Optional. The default installer does not run this.
+﻿# Optional. The default installer does not run this.
 # Enable BitLocker on C: with TPM+PIN and export the 48-digit recovery key.
 # Dual-boot safe: PIN is required at Windows pre-boot; Ubuntu LUKS is separate.
 # Call via: Install-X47Windows.ps1 -EnableBitLocker

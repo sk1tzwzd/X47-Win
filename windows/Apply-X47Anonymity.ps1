@@ -1,4 +1,4 @@
-#requires -RunAsAdministrator
+﻿#requires -RunAsAdministrator
 # Security + max-offline anonymity without re-running BitLocker or themes.
 [CmdletBinding()]
 param([switch]$Revert)

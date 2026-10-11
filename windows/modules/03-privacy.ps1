@@ -1,4 +1,4 @@
-# Cut Windows 11 telemetry, ads, location, and activity history.
+﻿# Cut Windows 11 telemetry, ads, location, and activity history.
 # Pro can only force diagnostic data to Required (0/Security needs Enterprise).
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' })

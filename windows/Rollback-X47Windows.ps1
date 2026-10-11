@@ -1,4 +1,4 @@
-#requires -RunAsAdministrator
+﻿#requires -RunAsAdministrator
 <#
 .SYNOPSIS
   Undo an X47-Win install using the snapshot in <KitRoot>\rollback.

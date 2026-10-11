@@ -1,4 +1,4 @@
-# Snapshot + rollback for the X47-Win kit.
+﻿# Snapshot + rollback for the X47-Win kit.
 # Does not format the disk, delete user documents, or turn BitLocker off.
 
 function X47-SnapshotDir {

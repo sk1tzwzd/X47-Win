@@ -1,4 +1,4 @@
-# Remove consumer junk. Keep Defender, Settings, Store, Photos, Calculator, Notepad, Terminal.
+﻿# Remove consumer junk. Keep Defender, Settings, Store, Photos, Calculator, Notepad, Terminal.
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' })
 )
@@ -7,6 +7,29 @@ param(
 $script:X47Root = $KitRoot
 X47-RequireAdmin
 X47-Log '=== 02 debloat ==='
+
+# OneDrive first, so a later Store-app error cannot skip it.
+X47-SetReg -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive' -Name DisableFileSyncNGSC -Value 1
+X47-SetReg -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive' -Name DisableFileSync -Value 1
+Get-Process -Name 'OneDrive' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+$odRun = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+if (Get-ItemProperty -Path $odRun -Name OneDrive -ErrorAction SilentlyContinue) {
+    Remove-ItemProperty -Path $odRun -Name OneDrive -Force -ErrorAction SilentlyContinue
+}
+$odSetup = @(
+    "$env:SystemRoot\System32\OneDriveSetup.exe"
+    "$env:SystemRoot\SysWOW64\OneDriveSetup.exe"
+) | Where-Object { Test-Path $_ } | Select-Object -First 1
+if ($odSetup) {
+    try {
+        Start-Process -FilePath $odSetup -ArgumentList '/uninstall' -Wait -ErrorAction Stop
+        X47-Log 'OneDrive uninstalled (local files left in place)' 'OK'
+    } catch {
+        X47-Log "OneDrive uninstall failed: $($_.Exception.Message)" 'WARN'
+    }
+} else {
+    X47-Log 'OneDrive setup exe not present — policy block applied' 'OK'
+}
 
 $remove = @(
     'Microsoft.XboxApp'
@@ -63,8 +86,13 @@ $removed = @()
 $skipped = @()
 foreach ($name in $remove) {
     $pkgs = @()
-    $pkgs += Get-AppxPackage -Name $name -AllUsers -ErrorAction SilentlyContinue
-    $pkgs += Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -eq $name }
+    try {
+        $pkgs += @(Get-AppxPackage -Name $name -AllUsers -ErrorAction SilentlyContinue)
+        $pkgs += @(Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -eq $name })
+    } catch {
+        X47-Log "list ${name}: $($_.Exception.Message)" 'WARN'
+        continue
+    }
     if (-not $pkgs) {
         $skipped += $name
         continue
@@ -109,23 +137,13 @@ try {
     X47-Log "hibernate off failed: $($_.Exception.Message)" 'WARN'
 }
 
-# Uninstall OneDrive. Does not delete already-synced files on disk.
-$odRun = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
-if (Get-ItemProperty -Path $odRun -Name OneDrive -ErrorAction SilentlyContinue) {
-    Remove-ItemProperty -Path $odRun -Name OneDrive -Force -ErrorAction SilentlyContinue
-}
-$odSetup = @(
-    "$env:SystemRoot\System32\OneDriveSetup.exe"
-    "$env:SystemRoot\SysWOW64\OneDriveSetup.exe"
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
-if ($odSetup) {
-    try {
-        Start-Process -FilePath $odSetup -ArgumentList '/uninstall' -Wait -ErrorAction Stop
-        X47-Log 'OneDrive uninstalled (local files left in place)' 'OK'
-    } catch {
-        X47-Log "OneDrive uninstall failed: $($_.Exception.Message)" 'WARN'
-    }
-}
+# Store apps stay installed but do not run in the background. Game Bar recording stays off.
+X47-SetReg -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications' -Name GlobalUserDisabled -Value 1
+X47-SetReg -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy' -Name LetAppsRunInBackground -Value 2
+X47-SetReg -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR' -Name AppCaptureEnabled -Value 0
+X47-SetReg -Path 'HKCU:\System\GameConfigStore' -Name GameDVR_Enabled -Value 0
+X47-SetReg -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR' -Name AllowGameDVR -Value 0
+X47-Log 'background apps and Game Bar off' 'OK'
 
 # Second pass: provisioned packages by wildcard so they do not return after a feature update.
 $provWild = @(

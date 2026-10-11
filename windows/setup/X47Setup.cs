@@ -189,7 +189,7 @@ namespace X47Setup
             _privacy = Tick("Privacy — telemetry Required, ads and location off", 36, 158, true);
             _ids = Tick("Rotate advertising ID and SQM ID (MachineGuid left alone)", 36, 188, true);
             _security = Tick("Security — inbound firewall, RDP off, Defender stays", 36, 218, true);
-            _anon = Tick("Max-offline anonymity — block MSA / Store / OneDrive / hosts", 36, 248, true);
+            _anon = Tick("Max-offline anonymity — block MSA / Store / OneDrive / hosts", 36, 248, false);
             _themeOn = Tick("Apply the selected look (Open-Shell / ExplorerPatcher as needed)", 36, 278, true);
 
             Label opt = Title("Optional — off by default", 28, 318, 400, 22, 10f, true);
@@ -487,33 +487,24 @@ namespace X47Setup
 
         string BuildArgs(string script)
         {
-            StringBuilder f = new StringBuilder();
-            f.Append("& '");
-            f.Append(script.Replace("'", "''"));
-            f.Append("' -Quiet -Theme ");
-            f.Append(SelectedTheme());
-            if (!_snap.Checked) f.Append(" -SkipSnapshot");
-            if (!_wall.Checked) f.Append(" -SkipWallpaper");
-            if (!_debloat.Checked) f.Append(" -SkipDebloat");
-            if (!_privacy.Checked) f.Append(" -SkipPrivacy");
-            if (!_ids.Checked) f.Append(" -SkipIdentifiers");
-            if (!_security.Checked) f.Append(" -SkipSecurity");
-            if (!_anon.Checked) f.Append(" -SkipAnonymity");
-            if (!_themeOn.Checked) f.Append(" -SkipTheme");
-            if (_bitlocker.Checked) f.Append(" -EnableBitLocker");
-            if (_guid.Checked) f.Append(" -SpoofMachineGuid");
-
-            // -Command wrapper (not -File): on any failure the console stays open
-            // showing the error until the user presses Enter, instead of vanishing
-            // before it can be read. The installer exits 0 explicitly on success.
+            // -File so PowerShell does not treat -Quiet/-Theme as its own switches,
+            // and so a leftover netsh exit code cannot mark a good run as failed.
+            // f is unused: those switches are appended after -File.
             StringBuilder a = new StringBuilder();
-            a.Append("-NoProfile -ExecutionPolicy Bypass -Command \"");
-            a.Append("$c=1; try { ");
-            a.Append(f);
-            a.Append("; $c=$LASTEXITCODE } catch { Write-Host $_ -ForegroundColor Red; $c=1 }; ");
-            a.Append("if ($c -ne 0) { Write-Host ''; ");
-            a.Append("Read-Host 'X47-Win reported an error - press Enter to close this window' | Out-Null }; ");
-            a.Append("exit $c\"");
+            a.Append("-NoProfile -ExecutionPolicy Bypass -File \"");
+            a.Append(script.Replace("\"", "\\\""));
+            a.Append("\" -Quiet -Theme ");
+            a.Append(SelectedTheme());
+            if (!_snap.Checked) a.Append(" -SkipSnapshot");
+            if (!_wall.Checked) a.Append(" -SkipWallpaper");
+            if (!_debloat.Checked) a.Append(" -SkipDebloat");
+            if (!_privacy.Checked) a.Append(" -SkipPrivacy");
+            if (!_ids.Checked) a.Append(" -SkipIdentifiers");
+            if (!_security.Checked) a.Append(" -SkipSecurity");
+            if (!_anon.Checked) a.Append(" -SkipAnonymity");
+            if (!_themeOn.Checked) a.Append(" -SkipTheme");
+            if (_bitlocker.Checked) a.Append(" -EnableBitLocker");
+            if (_guid.Checked) a.Append(" -SpoofMachineGuid");
             return a.ToString();
         }
 

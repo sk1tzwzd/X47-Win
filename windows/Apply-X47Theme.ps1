@@ -1,4 +1,4 @@
-#requires -RunAsAdministrator
+﻿#requires -RunAsAdministrator
 <#
 .SYNOPSIS
   Switch the X47 Windows look: XP, remastered XP, Vista, Windows 10, Windows 11, or X47.

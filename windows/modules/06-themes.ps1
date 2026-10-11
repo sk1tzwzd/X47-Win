@@ -1,4 +1,4 @@
-# Prompt for (or apply) an X47 Windows look.
+﻿# Prompt for (or apply) an X47 Windows look.
 param(
     [string]$KitRoot = $(if ($PSScriptRoot) { Split-Path -Parent $PSScriptRoot } else { 'C:\X47' }),
     [string]$Theme
