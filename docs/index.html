@@ -24,7 +24,7 @@
     </nav>
 
     <header class="hero">
-      <p class="free-note">1.1.3 — setup wizard · free and open source — separate from Ubuntu X47</p>
+      <p class="free-note">1.2.0 — toolbox: deep debloat, Gaming Mode, LAN transfer, Vault · free and open source — separate from Ubuntu X47</p>
       <h1 class="hero-brand">X47-<em>Win</em></h1>
       <p class="hero-lead">
         A privacy kit for Windows 11 with a setup GUI: pick a default look
@@ -58,8 +58,8 @@
           <li><strong>Debloat</strong> — Xbox, Widgets, Copilot, OneDrive, consumer junk</li>
           <li><strong>Privacy</strong> — telemetry cut to Required, ads and location off</li>
           <li><strong>Security</strong> — inbound firewall, RDP off, Defender stays on</li>
-          <li><strong>Anonymity</strong> — block Microsoft accounts and telemetry hosts</li>
-          <li><strong>MAC randomization</strong> — software override on every physical NIC (Wi-Fi + Ethernet)</li>
+          <li><strong>Anonymity</strong> — block telemetry hosts and Microsoft accounts (held back automatically while you still sign in with one)</li>
+          <li><strong>MAC randomization</strong> — Ethernet software override; Wi-Fi uses Windows' per-network random address</li>
           <li><strong>Safe to try</strong> — snapshot first; undo with <code>Rollback-X47Windows.bat</code> (does not delete your files)</li>
           <li><strong>Encryption advised</strong> — BitLocker (optional helper) or VeraCrypt; not required to install</li>
           <li><strong>MachineGuid</strong> left alone by default. Optional <code>-SpoofMachineGuid</code> warns first — breaks activation, does <em>not</em> hide the board UUID or TPM</li>
@@ -73,13 +73,37 @@
           <li><strong>Snapshot + rollback</strong> — restore point and <code>C:\X47\rollback</code> before changes. Undo with <code>Rollback-X47Windows.bat</code> (type <code>ROLLBACK</code>). Does not delete Documents or turn BitLocker off</li>
           <li><strong>Debloat + privacy</strong> — Xbox, Widgets, Copilot, OneDrive gone; telemetry Required; ads, location, activity history off</li>
           <li><strong>Security</strong> — inbound firewall, RDP/WinRM/SMBv1 off, UAC max, Recall off, Defender on</li>
-          <li><strong>Max-offline</strong> — block Microsoft accounts and telemetry/Store/Xbox hosts. Update + Defender stay</li>
-          <li><strong>MAC randomization</strong> — software override on every physical NIC (Wi-Fi and Ethernet). VPN adapters skipped. Factory MAC stays in firmware</li>
+          <li><strong>Max-offline</strong> — block telemetry/Store/Xbox hosts and Microsoft accounts. Still signed in with a Microsoft account? The sign-in pieces wait until you switch to a local one. Update + Defender stay</li>
+          <li><strong>MAC randomization</strong> — software override on Ethernet; Wi-Fi gets Windows' per-network random hardware address (works on drivers that refuse overrides). VPN adapters skipped. Factory MAC stays in firmware</li>
           <li><strong>Encryption</strong> — optional BitLocker helper, or VeraCrypt yourself. Not required to install</li>
           <li><strong>MachineGuid</strong> — unchanged unless <code>-SpoofMachineGuid</code> + type <code>SPOOF</code>. Breaks activation. Board UUID and TPM still identify the PC</li>
           <li><strong>Setup GUI</strong> — <code>X47Setup.exe</code> wizard: default look plus a checkbox for every feature</li>
           <li><strong>Looks</strong> — X47, XP, remastered XP, Vista, Win10, Win11</li>
+          <li><strong>Toolbox (1.2.0)</strong> — optional scripts in <code>windows\tools\</code>, each re-runnable, see below</li>
           <li><strong>Not Ark</strong> — this kit does not delete the Windows partition. Reclaiming the disk for Ubuntu is <a href="https://sk1tzwzd.github.io/ubuntu-x47-build/ark.html">X47 Ark</a> on Linux</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Toolbox</h2>
+        <p class="section-lead">
+          New in 1.2.0. Optional PowerShell tools in <code>C:\X47\tools\</code>
+          for after the install. Each one is safe to re-run, asks for admin
+          only when it needs it, and logs to <code>C:\X47\logs\</code>.
+        </p>
+        <ul class="clean">
+          <li><strong>Deep debloat</strong> — <code>debloat-deep.ps1</code>: ~60 services a home PC never uses (Xbox Live, phone/SMS/wallet, AI and telemetry hosts, enterprise and remote access, smart card, sensors), legacy features (PowerShell 2.0, Internet Explorer, Media Player, Steps Recorder) and leftover telemetry tasks. <code>-DryRun</code> first; <code>-Undo</code> restores every service. Bluetooth, Xbox controllers, camera, search and Print to PDF stay</li>
+          <li><strong>Debloat extras</strong> — <code>debloat.ps1</code>: the Copilot desktop app, Clipchamp, Family, Widgets runtime, Start and lock-screen suggestions, Bing in Start, Edge startup boost</li>
+          <li><strong>Hardening</strong> — <code>harden.ps1</code>: Defender back to full real-time protection with network protection, high cloud blocking and PUA blocking; telemetry tasks and SSDP/UPnP discovery off</li>
+          <li><strong>Performance</strong> — <code>performance.ps1</code>: Best performance power mode when plugged in (battery stays Balanced), aggressive CPU boost, hardware GPU scheduling, NVIDIA Control Panel when an NVIDIA GPU is present</li>
+          <li><strong>Gaming Mode</strong> — <code>gaming-mode.ps1 -Install</code>: a one-click taskbar button. ON switches to High performance, mutes notifications, pauses Mullvad and stops WSL; OFF puts every setting back exactly as it was</li>
+          <li><strong>Vault</strong> — <code>vault.ps1</code>: one owner-only folder with your SSH keys, AWS config and server notes, pinned in Explorer with its own icon</li>
+          <li><strong>LAN transfer with Linux</strong> — <code>ssh-transfer.ps1</code> + <code>transfer-tools.ps1</code>: key-only SSH reachable from one LAN machine, right-click <em>Send to</em>, a WinSCP session and an inbox folder. Works with Mullvad on</li>
+          <li><strong>Clock</strong> — <code>timesync.ps1</code> syncs against Cloudflare and pool.ntp.org; <code>timezone-auto.ps1</code> picks the time zone from the Wi-Fi network you join, with no location services</li>
+          <li><strong>Screen capture</strong> — <code>screen-capture.ps1</code>: lets Snipping Tool's area/window/full-screen, screenshot/record bar work under the background-apps block; PrtSc opens it</li>
+          <li><strong>Local account</strong> — <code>local-account.ps1 -DisplayName Name</code>: after leaving a Microsoft account, set the sign-in name, hide the email and finish the account block</li>
+          <li><strong>Dev rig</strong> — <code>dev-setup.ps1</code>: Python, uv, Node, PowerShell 7, GitHub CLI, Rust, Go and C++ Build Tools from one package list; optional WSL2 + Debian via <code>wsl.ps1</code></li>
+          <li><strong>Mullvad</strong> — <code>mullvad.ps1</code>: auto-connect at boot with LAN allowed; optional kill switch and DNS blockers</li>
         </ul>
       </section>
 

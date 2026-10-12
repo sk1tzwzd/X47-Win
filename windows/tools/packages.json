@@ -1,0 +1,21 @@
+{
+  "_comment": "Apps installed by tools/dev-setup.ps1 (installed via winget). Add new apps here so a rebuild can reinstall everything. 'override' is passed to the installer verbatim.",
+  "packages": [
+    { "id": "Python.Python.3.13", "group": "dev" },
+    { "id": "astral-sh.uv", "group": "dev" },
+    { "id": "OpenJS.NodeJS.LTS", "group": "dev" },
+    { "id": "Microsoft.PowerShell", "group": "dev" },
+    { "id": "GitHub.cli", "group": "dev" },
+    { "id": "Git.Git", "group": "dev" },
+    { "id": "Rustlang.Rustup", "group": "dev" },
+    { "id": "GoLang.Go", "group": "dev" },
+    {
+      "id": "Microsoft.VisualStudio.2022.BuildTools",
+      "group": "dev",
+      "override": "--quiet --wait --norestart --nocache --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+    },
+    { "id": "Microsoft.VisualStudioCode", "group": "dev" },
+    { "id": "WinSCP.WinSCP", "group": "transfer" },
+    { "id": "Gyan.FFmpeg", "group": "media" }
+  ]
+}

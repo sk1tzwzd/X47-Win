@@ -1,4 +1,4 @@
-﻿#requires -RunAsAdministrator
+#requires -RunAsAdministrator
 # Security + max-offline anonymity without re-running BitLocker or themes.
 [CmdletBinding()]
 param([switch]$Revert)
@@ -17,7 +17,8 @@ if ($Revert) {
 
 Write-Host ''
 Write-Host 'X47 anonymity + security pass' -ForegroundColor Cyan
-Write-Host 'This blocks Microsoft account / Store / OneDrive / Xbox / telemetry hosts.'
+Write-Host 'This blocks Store / OneDrive / Xbox / telemetry hosts and Microsoft accounts.'
+Write-Host 'Still signed in with a Microsoft account? Its sign-in stays working until tools\local-account.ps1.'
 Write-Host 'Windows Update and Defender stay on. Your IP is still visible without Mullvad.'
 Write-Host ''
 $go = Read-Host 'Type YES to continue'

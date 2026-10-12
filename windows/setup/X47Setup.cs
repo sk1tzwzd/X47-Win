@@ -189,7 +189,7 @@ namespace X47Setup
             _privacy = Tick("Privacy — telemetry Required, ads and location off", 36, 158, true);
             _ids = Tick("Rotate advertising ID and SQM ID (MachineGuid left alone)", 36, 188, true);
             _security = Tick("Security — inbound firewall, RDP off, Defender stays", 36, 218, true);
-            _anon = Tick("Max-offline anonymity — block MSA / Store / OneDrive / hosts", 36, 248, false);
+            _anon = Tick("Max-offline anonymity — block telemetry / Store / OneDrive hosts, random MACs", 36, 248, true);
             _themeOn = Tick("Apply the selected look (Open-Shell / ExplorerPatcher as needed)", 36, 278, true);
 
             Label opt = Title("Optional — off by default", 28, 318, 400, 22, 10f, true);
@@ -489,7 +489,6 @@ namespace X47Setup
         {
             // -File so PowerShell does not treat -Quiet/-Theme as its own switches,
             // and so a leftover netsh exit code cannot mark a good run as failed.
-            // f is unused: those switches are appended after -File.
             StringBuilder a = new StringBuilder();
             a.Append("-NoProfile -ExecutionPolicy Bypass -File \"");
             a.Append(script.Replace("\"", "\\\""));

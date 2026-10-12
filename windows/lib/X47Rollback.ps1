@@ -158,7 +158,7 @@ function X47-RandomizePhysicalMacs {
             }
         }
     }
-    netsh wlan set randomization enabled=yes 2>$null | Out-Null
+    Get-NetAdapter -Physical -ErrorAction SilentlyContinue | Where-Object { $_.NdisPhysicalMedium -eq 9 -or $_.InterfaceDescription -match 'Wi-?Fi|Wireless|802\.11' } | ForEach-Object { netsh wlan set randomization enabled=yes interface="$($_.Name)" 2>$null | Out-Null }  # Wi-Fi: per-network random MAC (driver-native)
 }
 
 function X47-RestoreMacs {

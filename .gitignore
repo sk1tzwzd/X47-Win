@@ -11,3 +11,4 @@ windows/rollback-archive-*/
 __pycache__/
 .cache/
 tmp/
+windows/tools/assets/*.png

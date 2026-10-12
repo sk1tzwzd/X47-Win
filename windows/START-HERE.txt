@@ -1,71 +1,4 @@
-X47-Win — start here
-====================
+X47-Win — start here  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.====================  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.You are on the Windows partition. Do this in Windows, not Ubuntu.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.1. Stay on AC power.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.2. Double-click C:\X47\Launch-X47Setup.bat  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   or C:\X47\Install-X47Windows.bat  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   (first run compiles X47Setup.exe, then the setup GUI opens).  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   Or, after that first compile, double-click:  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     C:\X47\X47Setup.exe  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     Desktop\X47-Win Setup.exe  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.3. The wizard:  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     Welcome → pick a default look (X47 circuit is selected) →  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     tick the features you want → Install.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   Snapshot is on by default. BitLocker and MachineGuid spoof stay off  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   unless you check them (each shows a warning). The kit does not delete  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   your files.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   Console-only (no GUI):  C:\X47\Install-X47Windows.bat /cli  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   Then type YES when asked.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.Undo (does not format the disk or turn BitLocker off):  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     C:\X47\Rollback-X47Windows.bat  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   Type ROLLBACK. Store apps may need the Microsoft Store or  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.   System Restore → "X47-Win before install".  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.Disk encryption (advised, not required)  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.---------------------------------------  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.An unlocked Windows disk is readable from Linux and if someone pulls the drive.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.Use one method, not both on the same volume:  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  BitLocker (Windows 11 Pro) — optional checkbox in the setup GUI, or:  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     C:\X47\Install-X47Windows.ps1 -EnableBitLocker  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    6+ digit pre-boot PIN. Photograph the 48-digit recovery key  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    (USB + C:\X47\BitLocker-Recovery.txt). Wait for:  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.      manage-bde -status C:  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    Then on Ubuntu: x47-windows-import-key /media/$USER/<USB>/X47-BitLocker-Recovery-*.txt  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  VeraCrypt (Home or Pro) — not installed by this kit.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    Download only from https://www.veracrypt.fr/  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    A file container is the simple option (opens on Windows and on Linux  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    if you install VeraCrypt there too). Full system-disk encryption is  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    possible but read VeraCrypt’s own dual-boot notes first — GRUB +  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    VeraCrypt system encryption is easy to get wrong.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.    Do not put VeraCrypt on a volume that already has BitLocker.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.Security + max-offline anonymity (without encryption):  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     C:\X47\Apply-X47Anonymity.bat  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Blocks Microsoft accounts, Store, OneDrive, Xbox, telemetry hosts.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Defender and Windows Update stay on. Revert: Apply-X47Anonymity.ps1 -Revert  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Signed in with a Microsoft account? It keeps working: the account block waits.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Your IP is still visible unless Mullvad is running on Windows.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.Looks (switch anytime):  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.     C:\X47\Apply-X47Theme.bat  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  1 X47 circuit    2 Windows XP    3 Remastered XP  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  4 Windows Vista  5 Windows 10    6 Windows 11 stock  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.Toolbox (optional, after install): C:\X47\tools\  - see C:\X47\README.md
+  deep debloat, Gaming Mode button, Vault, LAN transfer, time zone, dev rig.
 
-You are on the Windows partition. Do this in Windows, not Ubuntu.
-
-1. Stay on AC power.
-2. Double-click C:\X47\Launch-X47Setup.bat
-   or C:\X47\Install-X47Windows.bat
-   (first run compiles X47Setup.exe, then the setup GUI opens).
-
-   Or, after that first compile, double-click:
-     C:\X47\X47Setup.exe
-     Desktop\X47-Win Setup.exe
-
-3. The wizard:
-     Welcome → pick a default look (X47 circuit is selected) →
-     tick the features you want → Install.
-
-   Snapshot is on by default. BitLocker and MachineGuid spoof stay off
-   unless you check them (each shows a warning). The kit does not delete
-   your files.
-
-   Console-only (no GUI):  C:\X47\Install-X47Windows.bat /cli
-   Then type YES when asked.
-
-Undo (does not format the disk or turn BitLocker off):
-
-     C:\X47\Rollback-X47Windows.bat
-
-   Type ROLLBACK. Store apps may need the Microsoft Store or
-   System Restore → "X47-Win before install".
-
-Disk encryption (advised, not required)
----------------------------------------
-An unlocked Windows disk is readable from Linux and if someone pulls the drive.
-Use one method, not both on the same volume:
-
-  BitLocker (Windows 11 Pro) — optional checkbox in the setup GUI, or:
-
-     C:\X47\Install-X47Windows.ps1 -EnableBitLocker
-
-    6+ digit pre-boot PIN. Photograph the 48-digit recovery key
-    (USB + C:\X47\BitLocker-Recovery.txt). Wait for:
-      manage-bde -status C:
-    Then on Ubuntu: x47-windows-import-key /media/$USER/<USB>/X47-BitLocker-Recovery-*.txt
-
-  VeraCrypt (Home or Pro) — not installed by this kit.
-    Download only from https://www.veracrypt.fr/
-    A file container is the simple option (opens on Windows and on Linux
-    if you install VeraCrypt there too). Full system-disk encryption is
-    possible but read VeraCrypt’s own dual-boot notes first — GRUB +
-    VeraCrypt system encryption is easy to get wrong.
-    Do not put VeraCrypt on a volume that already has BitLocker.
-
-Security + max-offline anonymity (without encryption):
-
-     C:\X47\Apply-X47Anonymity.bat
-
-  Blocks Microsoft accounts, Store, OneDrive, Xbox, telemetry hosts.
-  Defender and Windows Update stay on. Revert: Apply-X47Anonymity.ps1 -Revert
-  If you use a Microsoft account: switch to a local account in Settings first.
-  Your IP is still visible unless Mullvad is running on Windows.
-
-Looks (switch anytime):
-
-     C:\X47\Apply-X47Theme.bat
-
-  1 X47 circuit    2 Windows XP    3 Remastered XP
-  4 Windows Vista  5 Windows 10    6 Windows 11 stock
-
-Full walkthrough: C:\X47\docs\x47-windows-guide.html
+Full walkthrough: C:\X47\docs\x47-windows-guide.html  Switch to local in Settings later, then run tools\local-account.ps1 -DisplayName <name>.

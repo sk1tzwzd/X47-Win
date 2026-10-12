@@ -17,7 +17,7 @@ C:\X47\Install-X47Windows.ps1
 
 The installer writes a snapshot first (`C:\X47\rollback` plus a Windows restore point). It does not delete your documents. Undo with `Rollback-X47Windows.bat` (type `ROLLBACK`).
 
-Physical NIC MACs are randomized (software override). `MachineGuid` stays unless you pass `-SpoofMachineGuid` and type `SPOOF` — that breaks activation and does not hide the board UUID or TPM.
+Ethernet MACs are randomized (software override); Wi-Fi uses Windows' per-network random address. `MachineGuid` stays unless you pass `-SpoofMachineGuid` and type `SPOOF` — that breaks activation and does not hide the board UUID or TPM.
 
 ## Security and privacy (short)
 
@@ -25,7 +25,7 @@ Physical NIC MACs are randomized (software override). `MachineGuid` stays unless
 
 **Locks:** inbound firewall; RDP/WinRM/SMBv1/LLMNR off; UAC max; Recall off; Fast Startup off.
 
-**Cuts:** telemetry to Required; ads/location/activity history off; Advertising ID + SQM ID rotated; Microsoft accounts blocked; Store/OneDrive/Xbox/telemetry hosts blocked; OneDrive uninstalled; physical NIC MACs randomized (software override); NTP → pool.ntp.org.
+**Cuts:** telemetry to Required; ads/location/activity history off; Advertising ID + SQM ID rotated; Microsoft accounts blocked (held back automatically while you still sign in with one); Store/OneDrive/Xbox/telemetry hosts blocked; OneDrive uninstalled; physical NIC MACs randomized (software override); NTP → pool.ntp.org.
 
 **Does not hide:** board UUID, TPM, `MachineGuid`, or your ISP IP (run Mullvad on Windows for that). Those cannot be hidden without breaking Windows.
 
@@ -45,9 +45,10 @@ See `windows/START-HERE.txt` and `windows/docs/x47-windows-guide.html`.
 
 - **Snapshot + rollback** — restore point + `C:\X47\rollback`. Undo: `Rollback-X47Windows.bat` (type `ROLLBACK`)
 - **Debloat / privacy / security / max-offline** — junk apps out, telemetry Required, inbound lock, MSA/hosts block
-- **MAC randomization** — all physical NICs (software override)
+- **MAC randomization** — Ethernet software override, Wi-Fi per-network random address
 - **Encryption optional** — `-EnableBitLocker` or VeraCrypt from [veracrypt.fr](https://www.veracrypt.fr/)
 - **MachineGuid optional** — `-SpoofMachineGuid` then `SPOOF` (breaks activation; SMBIOS/TPM unchanged)
 - **Setup GUI** — `X47Setup.exe` (theme picker + feature checkboxes). Source: `windows/setup/`
 - **Looks** — `Apply-X47Theme.bat`
+- **Toolbox (1.2.0)** — optional re-runnable tools in `windows/tools/`: deep debloat (with `-Undo`), Defender hardening, always-on performance, a Gaming Mode button, a Vault for SSH keys, key-only LAN transfer with Linux (Send to, WinSCP), NTP + Wi-Fi-based time zone, Snipping Tool screen capture fix, local-account finisher, dev rig (Python/uv, Node, Rust, Go, C++ Build Tools), optional WSL2 + Debian, Mullvad baseline. See `windows/README.md`.
 - **Not disk reclaim** — deleting Windows so Ubuntu owns the disk is [X47 Ark](https://sk1tzwzd.github.io/ubuntu-x47-build/ark.html) on Ubuntu
